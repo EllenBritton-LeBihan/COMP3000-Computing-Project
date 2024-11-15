@@ -4,7 +4,7 @@ from email_templates import family_friends_template, work_template, phishing_tem
 
 def generate_conversation(conn, cursor, num_emails=50):
     for _ in range(num_emails):
-        contact_type = random.choice(['family_friends', 'work', 'service_providers_phishing'])
+        contact_type = random.choice(['family_friends', 'work', 'phishing'])
         if contact_type == 'family_friends':
             email = family_friends_template()
         elif contact_type == 'work':
@@ -18,7 +18,7 @@ def generate_conversation(conn, cursor, num_emails=50):
         ''', (email['subject'], email['sender'], email['recipient'], email['body'], email['category']))
     conn.commit()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     conn = sqlite3.connect('emails.db')
     cursor = conn.cursor()
     generate_conversation(conn, cursor, 50)

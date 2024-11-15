@@ -1,13 +1,11 @@
-import sqlite3
-from faker import Faker
-import random
-from email_templates import generate_email, family_friends_template, work_template, phishing_template
+#populates and creates db emails
 
-fake = Faker()
-categories = ['regular', 'phishing', 'spam']
+import sqlite3
+import random
+from email_templates import family_friends_template, work_template, phishing_template
 
 def setup_database():
-    conn = sqlite3.connect('emails.db')
+    conn = sqlite3.connect('emails.db') # persistent db
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS emails (
@@ -18,23 +16,33 @@ def setup_database():
             body TEXT,
             category TEXT
         )
-    ''')
+    ''') 
     conn.commit()
     return conn, cursor
 
-def populate_basic_emails(conn, cursor, num_emails=100):
+categories = ["family_friends", "work", "phishing"]
+
+def populate_basic_emails(conn, cursor, num_emails=20):
     for _ in range(num_emails):
         category = random.choice(categories)
-        email = generate_email(category)
-        if category == 'phishing':
-            email['body'] += "\n\nUrgent: Verify your account here: http://malicious-link.com"
+
+        if category == 'family_friends':
+            print('Calling family_friends_template')
+            email = family_friends_template()
+        elif category == 'work':
+            print('Calling work_template')
+            email = work_template()
+        elif category == 'phishing':
+            print('Calling phishing_template')
+            email = phishing_template()
+
         cursor.execute('''
             INSERT INTO emails (subject, sender, recipient, body, category)
             VALUES (?, ?, ?, ?, ?)
         ''', (email['subject'], email['sender'], email['recipient'], email['body'], email['category']))
     conn.commit()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     conn, cursor = setup_database()
-    populate_basic_emails(conn, cursor, 100)
+    populate_basic_emails(conn, cursor, 20)
     conn.close()
