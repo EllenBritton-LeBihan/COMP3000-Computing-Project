@@ -46,3 +46,5 @@ if __name__ == '__main__':
     conn, cursor = setup_database()
     populate_basic_emails(conn, cursor, 20)
     conn.close()
+
+    
