@@ -1,5 +1,11 @@
 import random
 
+
+import os 
+
+pwd = os.getcwd()
+print(pwd)
+
 email_list = [
     'sarah.jameson@example.com',
 'michael.brown77@fakemail.net',
@@ -85,7 +91,9 @@ def family_friends_template():
     body_family_template = [
         f'Hi {recipient_name}, how have you been? Let’s catch up soon!',
         f'Hello {recipient_name}, just wanted to say hello!',
-
+        f'Hey {recipient_name}, it’s been too long! We should chat soon.',
+        f'What’s new, {recipient_name}? Let’s plan a family get-together soon.',
+        f'Hi {recipient_name}, I was just thinking about you! Let’s catch up soon.'
     ]
     return {
         'subject': f"Subject: {subject}\n",
@@ -110,7 +118,11 @@ def work_template():
     body_work_template = [
         f'Dear {recipient_name}, please review the required updates on the project. Regards, {sender_name}',
         f'Hi {recipient_name}, here are the key updates on the mentioned project.',
+        f'Hello {recipient_name}, I need you to check these updates ASAP.',
+        f'Hey {recipient_name}, quick reminder to review the project details.',
+        f'Hi {recipient_name}, please take a look at these changes for the project. Thanks!',
     ]
+
     return {
         'subject': f"Subject: {subject}\n",
         'sender': f"Sender: {sender_email}\n",
@@ -130,14 +142,93 @@ def phishing_template():
     sender_name = sender_email_name_map[sender_email]
     recipient_name = recipient_email_name_map[recipient_email]
 
-    subject = random.choice(subject_phishing_list)
-    body_phishing_template = [
-        f'Dear {recipient_name}, there is an issue with your account! Verify your details here: http://malicious-link.com\nThanks for your Support\n',
+
+    #mismatched display names and email addresses
+    spoofed_sender_email = random.choice([
+        f'{sender_name.lower()}@secure-login.net',
+        f'{sender_name.lower()}@support-verify.com',
+        f'helpdesk@{random.choice(["accounts-security.com", "myupdates.live"])}'
+    ])
+
+    #variety of link styles
+    malicious_link = random.choice([
+        'http://192.168.0.1/verify',
+        'http://bit.ly/secure-login',
+        f'http://secure-login.{random.choice(["co", "io", "net"])}',
+        f'https://{random.choice(["payppal", "rnicrosoft", "amazcn"])}-security-alert.com'
+    ])
+
+    #subject enhancement for phishing charecteristics
+    subject_phishing_list = [
+       'Verify Account Ownership Immediately',
+        'Urgent: Account Security Breach Detected',
+        'Immediate Action Required: Verify Payment Details',
+        'Security Alert: Unusual Login Attempt',
+        'Your Account is at Risk! Respond Now',
+        'Action Required: Failed Payment Attempt Detected'
     ]
+    subject = random.choice(subject_phishing_list)
+
+
+    body_phishing_template = [
+          f"Dear {recipient_name},\n\nWe’ve detected a login attempt from an unrecognized device. To secure your account, verify your identity immediately: {malicious_link}\n\nBest regards,\nAccount Security Team",
+        f"Hi {recipient_name},\n\nYour payment for the recent purchase failed. Please update your payment details using this link: {malicious_link}.\n\nRegards,\nBilling Department",
+        f"Hello {recipient_name},\n\nSuspicious activity has been detected in your account. For your security, click here to confirm your account details: {malicious_link}.\n\nThank you,\nSupport Team",
+        f"Dear {recipient_name},\n\nYour account will be permanently locked if verification is not completed within 24 hours. Verify now: {malicious_link}\n\nThank you,\nCustomer Support",
+        f"Attention {recipient_name},\n\nUnusual activity detected! For your protection, please validate your account here: {malicious_link}\n\nRegards,\nSecurity Team",
+    ]
+
+    #gen suspicious attachmente names
+    suspicious_attachment = random.choice([
+        'invoice.exe', 'security_update_v1.js', 'payment_info.scr', 'account_details.zip', 'login_info.bat'
+    ])
+
+    #include the email body with or w/o attachments
+    if random.choice([True, False]):
+        body_text = f"{random.choice(body_phishing_template)}\n\nAttachment: {suspicious_attachment}"
+    else:
+        body_text = random.choice(body_phishing_template)
+
     return {
         'subject': f"Subject: {subject}\n",
-        'sender': f"Sender: {sender_email}\n",
+        'sender': f"Sender: {spoofed_sender_email}\n",
         'recipient': f"Recipient: {recipient_email}\n",
-        'body': f"Email Body: {random.choice(body_phishing_template)}\n",   
+        'body': f"Email Body: {body_text}\n",
         'category': 'phishing'
     }
+
+def family_friends_template_labelled():
+    #generates a family/friends email with relevant flags.
+    template = family_friends_template()
+    return{
+        **template,
+        'features': {
+            'contains_suspicious_link': False,
+             'mismatched_display_name': False,
+             'urgent_language': False,
+             'suspicious_attachement': False,
+        }
+    }
+
+def work_template_labelled():
+    template = work_template()
+    return {
+        **template,
+        'features': {
+            'contains_suspicious_link': False,
+            'mismatched_display_name': False,
+            'ugrent_language': 'Urgent' in template['subject'],
+            'suspicious_attachment': False,
+        }
+    }
+
+def phishing_template_labelled():
+    template = phishing_template()
+    suspicious_flags = {
+        'contains_suspicious_link': True,
+        'mismatched_display_name': '@example' not in template['sender'],
+        'urgenet_language': 'Urgent' in template['subject'] or 'Action Required' in template['subject'],
+        'suspicious_attachment': 'Attachment:' in template['body']
+    }
+    return {**template, 'features': suspicious_flags}
+
