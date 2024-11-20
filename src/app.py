@@ -1,8 +1,7 @@
 from flask import Flask
 from flask_mail import Mail, Message
 import sqlite3
-from scripts.generate_emails import setup_database, populate_basic_emails
-from scripts.conversation_generator import generate_conversation
+
 
 # init flask app
 app = Flask(__name__)

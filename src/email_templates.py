@@ -1,10 +1,6 @@
 import random
 
 
-import os 
-
-pwd = os.getcwd()
-print(pwd)
 
 email_list = [
     'sarah.jameson@example.com',
@@ -206,7 +202,7 @@ def family_friends_template_labelled():
             'contains_suspicious_link': False,
              'mismatched_display_name': False,
              'urgent_language': False,
-             'suspicious_attachement': False,
+             'suspicious_attachment': False,
         }
     }
 
@@ -217,9 +213,9 @@ def work_template_labelled():
         'features': {
             'contains_suspicious_link': False,
             'mismatched_display_name': False,
-            'ugrent_language': 'Urgent' in template['subject'],
+            'urgent_language': 'Urgent' in template['subject'],
             'suspicious_attachment': False,
-        }
+        } #figure out how to determine the difference between a suspicious link and a non-suspicious link.
     }
 
 def phishing_template_labelled():
@@ -227,7 +223,7 @@ def phishing_template_labelled():
     suspicious_flags = {
         'contains_suspicious_link': True,
         'mismatched_display_name': '@example' not in template['sender'],
-        'urgenet_language': 'Urgent' in template['subject'] or 'Action Required' in template['subject'],
+        'urgent_language': 'Urgent' in template['subject'] or 'Action Required' in template['subject'],
         'suspicious_attachment': 'Attachment:' in template['body']
     }
     return {**template, 'features': suspicious_flags}

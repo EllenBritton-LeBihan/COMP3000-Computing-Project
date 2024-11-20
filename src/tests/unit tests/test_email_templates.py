@@ -1,5 +1,5 @@
 import unittest
-from Templates.email_templates import (
+from email_templates import (
     family_friends_template_labelled,
     work_template_labelled,
     phishing_template_labelled

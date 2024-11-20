@@ -2,11 +2,9 @@ import sqlite3
 import random
 import os 
 
-pwd = os.getcwd()
-print(pwd)
-
-from Database.db_utils import get_connection, execute_query
-from Templates.email_templates import family_friends_template_labelled, work_template_labelled,  phishing_template_labelled
+from db_utils import get_connection, execute_query
+from email_templates import family_friends_template_labelled, work_template_labelled,  phishing_template_labelled
+from schema import create_tables
 
 def generate_conversation(conn, cursor, num_emails=50):
     for _ in range(num_emails):
@@ -39,5 +37,6 @@ def generate_conversation(conn, cursor, num_emails=50):
 if __name__ == '__main__':
     conn = get_connection()  # uses db_utils for connection
     cursor = conn.cursor()
+    create_tables()  # Ensures the table exists
     generate_conversation(conn, cursor, 50)
     conn.close()

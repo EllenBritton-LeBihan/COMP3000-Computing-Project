@@ -2,9 +2,9 @@
 
 import sqlite3
 import random
-from Src.Templates.email_templates import family_friends_template_labelled, work_template_labelled, phishing_template_labelled
-from Src.Database.db_utils import get_connection, execute_query
-from Src.Database.schema import create_tables
+from email_templates import family_friends_template_labelled, work_template_labelled, phishing_template_labelled
+from db_utils import get_connection, execute_query
+from schema import create_tables
 
 
 categories = ["family_friends", "work", "phishing"]

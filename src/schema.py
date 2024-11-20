@@ -3,7 +3,7 @@ import sqlite3
 
 
 def create_tables():
-    conn = sqlite3.connect("Data/emails.db") 
+    conn = sqlite3.connect("emails.db") 
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS emails (
