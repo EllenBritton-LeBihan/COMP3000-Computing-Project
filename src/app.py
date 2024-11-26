@@ -32,7 +32,6 @@ def test_email():
         print(f"Error: {e}")
         return f"Failed to send test email: {e}"
     
-
 #func to select a random email from the db each time it's called
 def get_random_email():
     try: 

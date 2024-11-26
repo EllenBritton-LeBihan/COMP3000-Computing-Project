@@ -65,24 +65,40 @@ subject_phishing_list =  [
     'Account Verification Alert: Immediate Action Required'
 ]
 
+subject_spam_list = [
+    'Congratulations! You won a Free iPhone!',
+    'Exclusive Offer: Act now to claim your discount!',
+    'You have been selected for a special prize!',
+    'Earn £5000 weekly from home - no experience needed!',
+    'Do not miss out! This offer is a once-in-a-lifetime opportunity!',
+    'Claim your free gift card now!',
+    'Instant approval for your dream vacation!',
+]
+
+#function to validate category content to make labelling clearer
+def get_email_by_category(category):
+    if category in ['family_friends', 'work']:
+        valid_domains = ['example.com', 'example.net', 'example.org'] # will expand on accepted domains
+        return [email for email in email_list if any(email.endswith(domain) for domain in valid_domains)]
+    elif category in ['spam', 'phishing']:
+        suspicious_domains = ['dummyemail.org', 'tempmail.com', 'fakemail.net']
+        return [email for email in email_list if any(email.endswith(domain) for domain in suspicious_domains)]
+
+
 #email - to - name mapping for senders/recipients
 sender_email_name_map = dict(zip(email_list, sender_first_name))
 recipient_email_name_map = dict(zip(email_list, recipient_first_name))
 
 
 def family_friends_template():
-     
-    sender_email = random.choice(email_list)
-    recipient_email = random.choice(email_list)
-    # make sure sender and recipient r different.
+    sender_email = random.choice(get_email_by_category('family_friends'))
+    recipient_email = random.choice(get_email_by_category('family_friends'))
     while sender_email == recipient_email:
-        recipient_email = random.choice(email_list)
-
+        recipient_email = random.choice(get_email_by_category('family_friends'))
 
     sender_name = sender_email_name_map[sender_email]
     recipient_name = recipient_email_name_map[recipient_email]
 
-    #generating subject/body
     subject = random.choice(subject_family_list)
     body_family_template = [
         f'Hi {recipient_name}, how have you been? Let’s catch up soon!',
@@ -91,21 +107,23 @@ def family_friends_template():
         f'What’s new, {recipient_name}? Let’s plan a family get-together soon.',
         f'Hi {recipient_name}, I was just thinking about you! Let’s catch up soon.'
     ]
+
     return {
         'subject': f"Subject: {subject}\n",
         'sender': f"Sender: {sender_email}\n",
         'recipient': f"Recipient: {recipient_email}\n",
-        'body': f"Email Body: {random.choice(body_family_template)}\n",  
+        'body': f"Email Body: {random.choice(body_family_template)}\n",
         'category': 'family_friends'
     }
 
 def work_template():
 
-    sender_email = random.choice(email_list)
-    recipient_email = random.choice(email_list)
+
+    sender_email = random.choice(get_email_by_category('work'))
+    recipient_email = random.choice(get_email_by_category('work'))
    
     while sender_email == recipient_email:
-        recipient_email = random.choice(email_list)
+        recipient_email = random.choice(get_email_by_category('work'))
 
     sender_name = sender_email_name_map[sender_email]
     recipient_name = recipient_email_name_map[recipient_email]
@@ -129,11 +147,11 @@ def work_template():
 
 def phishing_template():
 
-    sender_email = random.choice(email_list)
-    recipient_email = random.choice(email_list)
+    sender_email = random.choice(get_email_by_category('phishing'))
+    recipient_email = random.choice(get_email_by_category('family_friends'))
    
     while sender_email == recipient_email:
-        recipient_email = random.choice(email_list)
+        recipient_email = random.choice(get_email_by_category('work') or get_email_by_category('family_friends'))
 
     sender_name = sender_email_name_map[sender_email]
     recipient_name = recipient_email_name_map[recipient_email]
@@ -163,8 +181,8 @@ def phishing_template():
         'Your Account is at Risk! Respond Now',
         'Action Required: Failed Payment Attempt Detected'
     ]
+    
     subject = random.choice(subject_phishing_list)
-
 
     body_phishing_template = [
           f"Dear {recipient_name},\n\nWe’ve detected a login attempt from an unrecognized device. To secure your account, verify your identity immediately: {malicious_link}\n\nBest regards,\nAccount Security Team",
@@ -193,6 +211,37 @@ def phishing_template():
         'category': 'phishing'
     }
 
+
+def spam_template():
+    sender_email = random.choice(get_email_by_category('spam'))
+    recipient_email = random.choice(get_email_by_category('family_friends'))
+
+    # Ensure sender and recipient are not the same
+    while sender_email == recipient_email:
+        recipient_email = random.choice(get_email_by_category('work') or get_email_by_category('family_friends'))
+
+    sender_name = sender_email_name_map[sender_email]
+    recipient_name = recipient_email_name_map[recipient_email]
+
+   
+    body_spam_template = [
+        f"Hi {recipient_name},\n\nCongratulations! You’ve been selected to win a brand-new iPhone. Click here to claim your prize now: http://claim-your-prize.com.\n\nDon’t miss this exclusive opportunity!",
+        f"Hello {recipient_name},\n\nAct fast! You can save big with this limited-time offer. Visit http://exclusive-offer.com and enjoy your discount today.",
+        f"Dear {recipient_name},\n\nYou’ve been chosen for a special prize! Claim it here: http://special-prize.net.\n\nBest regards,\nThe Rewards Team",
+        f"Hi {recipient_name},\n\nWork from the comfort of your home and earn £5000 weekly! No prior experience needed. Visit http://easy-income.com to get started today.",
+        f"Hi {recipient_name},\n\nTime is running out! Don’t miss this once-in-a-lifetime opportunity. Visit http://amazing-deals.com to secure your deal now.",
+        f"Hello {recipient_name},\n\nClaim your free £100 gift card now! Click here to redeem: http://free-gift.com.\n\nHurry, offer ends soon!",
+        f"Hi {recipient_name},\n\nInstant approval for your dream vacation is just a click away! Visit http://dream-vacation.com and start planning today.",
+    ]
+
+    return {
+        'subject': f"Subject: {random.choice(subject_spam_list)}\n",
+        'sender': f"Sender: {sender_email}\n",
+        'recipient': f"Recipient: {recipient_email}\n",
+        'body': f"Email Body: {random.choice(body_spam_template)}\n",
+        'category': 'spam'
+    }
+   
 def family_friends_template_labelled():
     #generates a family/friends email with relevant flags.
     template = family_friends_template()
@@ -215,7 +264,7 @@ def work_template_labelled():
             'mismatched_display_name': False,
             'urgent_language': 'Urgent' in template['subject'],
             'suspicious_attachment': False,
-        } #figure out how to determine the difference between a suspicious link and a non-suspicious link.
+        } #figure out how to determine the difference between a suspicious link and a non-suspicious 
     }
 
 def phishing_template_labelled():
@@ -228,3 +277,17 @@ def phishing_template_labelled():
     }
     return {**template, 'features': suspicious_flags}
 
+def spam_template_labelled():
+    template = spam_template()
+    return {
+        **template,
+        'features': {
+            'contains_suspicious_link': 'http://' in template['body'] or 'https://' in template['body'],
+            'mismatched_display_name': '@example' not in template['sender'],#spam emails often use fake domains
+            'urgent_language': any(
+                phrase in template['subject'].lower() 
+                for phrase in ['urgent', 'exclusive', 'act now', 'limited', 'offer', 'don’t miss', 'congratulations']
+            ),
+            'suspicious_attachment': 'Attachment:' in template['body'],  #check if the email mentions an attachment
+        }
+    }
