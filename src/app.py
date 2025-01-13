@@ -1,83 +1,44 @@
-from flask import Flask
-from flask_mail import Mail, Message
-import sqlite3
+from flask import Flask, request, render_template, jsonify
+import joblib
+import re
+from sklearn.feature_extraction.text import TfidfVectorizer
 
+app=Flask(__name__)
 
-# init flask app
-app = Flask(__name__)
+rf_model = joblib.load('random_forest_model.pkl')
 
-#config MailHog server
-app.config["MAIL_SERVER"] = "localhost"  # MH server
-app.config["MAIL_PORT"] = 1025           # MHSMTP port
-app.config["MAIL_USE_TLS"] = False       # TLS off for local testing
-app.config["MAIL_USE_SSL"] = False       # SSL off for local testing
-app.config["MAIL_USERNAME"] = None       # No user required for MH
-app.config["MAIL_PASSWORD"] = None       # No pass needed for MH
+#load TFIDF vectorizer (used during training)
+vectorizer = joblib.load('tfidf_vectorizer.pkl')  
 
-mail = Mail(app)
+#function to clean and preprocess email content
+def preprocess_email(text):
+    text = text.lower()
+    text = re.sub(r'<[^>]+>', '', text)  #remove HTML tags
+    text = re.sub(r'http\S+', '', text)  # remove urls
+    text = re.sub(r'[^a-z\s]', '', text)  #remove nonalphabetic chars
+    return text
 
-#mail to test routes work with mailhog 
-@app.route("/test_email")
-def test_email():
-    try:
-        msg = Message(
-            subject="Test Email",
-            sender="test@example.com",
-            recipients=["recipient@example.com"],
-            body="This is a test email."
-        )
-        mail.send(msg)
-        return "Test email sent!"
-    except Exception as e:
-        print(f"Error: {e}")
-        return f"Failed to send test email: {e}"
-    
-#func to select a random email from the db each time it's called
-def get_random_email():
-    try: 
-        conn = sqlite3.connect("emails.db", check_same_thread=False)
-        cursor = conn.cursor()
-        cursor.execute("SELECT subject, sender, recipient, body, category FROM emails ORDER BY RANDOM() LIMIT 1")
-        email = cursor.fetchone()
-        print(f"Retrieved email: {email}")
-        return email
-    except sqlite3.Error as e:
-        print(f"Database error: {e}")
-        return None 
-    finally:
-        conn.close()
+@app.route("/")
+def home():
+    return render_template('index.html')
 
-#route to send a random email from the database using Flask-Mail
-@app.route("/send_random_email")
-def send_random_email():
-    email = get_random_email()
-    if email:
-        # Strip unwanted newline characters or extra spaces from the values
-        subject, sender, recipient, body, category = email
-        subject = subject.strip()    # remove spaces and newlines
-        sender = sender.strip()      # 
-        recipient = recipient.strip() # 
-        body = body.strip()          # 
-        category = category.strip()  #
+@app.route("/predict", methods=['POST'])
+def predict():
+    #GET email content from form
+    email_content = request.form['email_content']
 
-        print(f"Sending email from {sender} to {recipient} with subject {subject}")
+    #preprocess email
+    processed_email = preprocess_email(email_content)
 
-        msg = Message(
-            subject=subject,
-            sender=sender,
-            recipients=[recipient]
-        )
-        msg.body = body
+    #transform with TF-IDF vectorizer
+    email_features = vectorizer.transform([processed_email])
 
-        try:
-            mail.send(msg)
-            return f"Email sent to {recipient} with subject '{subject}'"
-        except Exception as e:
-            print(f"Error sending email: {e}")
-            return f"Error sending email: {e}"
-    else:
-        return "No email found in database!"
+    #predict with RF model
+    prediction = rf_model.predict(email_features)
 
-# init db when the app starts
-if __name__ == "__main__":
+    #return 
+    result = 'Phishing Email Detected!' if prediction[0] == 1 else 'Email is Safe.'
+    return jsonify({'result': result})
+
+if __name__ == '__main__':
     app.run(debug=True)
