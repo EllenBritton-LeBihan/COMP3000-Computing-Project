@@ -1,0 +1,30 @@
+              precision    recall  f1-score   support
+
+           0       0.50      0.17      0.25       100
+           1       0.50      0.83      0.62       100
+
+    accuracy                           0.50       200
+   macro avg       0.50      0.50      0.44       200
+weighted avg       0.50      0.50      0.44       200
+
+
+
+Interrpretation of results
+
+The model has a poor performance, indicated by low F1-sores and accuracy.
+
+For phishing (1) model performs decently high (recall of 0.83) meaning it 
+identifies most phishing emails. However precision is low (0.50) meaning half
+the emails it predicted as phishing were not actully phishing.
+
+For non-phishin emails (0) the model performs poorly. Low recal (0.17).
+Indicating that it misses most of the legitimate emails, wrongly predicting 
+them as phishing. Precision is low (0.50) meaning only half is right.
+
+The model absolutely needs improvement, its accuracy and metrics suggest 
+failure to predict non-phishing emails accurately.
+
+Must balance dataset better.
+Model tune to refine the model.
+improve feature engineering#
+Look into ROC curves ?

@@ -1,0 +1,8 @@
+flask
+numpy
+pandas
+sklearn
+spacy
+textblob
+nltk
+sqlite3
