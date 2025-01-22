@@ -29,28 +29,28 @@ def home():
 def test_email():
     email_text = request.form['email_text']
     
-    # Preprocess the input email text
+    #preprocess
     processed_email = preprocess_email(email_text)
     
-    # Transform using the TF-IDF vectorizer
+    #transform using tfidf
     X_test = vectorizer.transform([processed_email])
     
-    # Predict the label (0 = Legit, 1 = Phishing)
+    #predict the label (0 = Legit, 1 = Phishing)
     prediction = rf_model.predict(X_test)[0]
     
-    # Prepare the model performance metrics
-    test_data = pd.read_csv('data/test_email_dataset.csv')  # Load your test data
+    #prepare metrics to load 
+    test_data = pd.read_csv('data/test_email_dataset.csv')  #load the test data
     test_data['processed_body'] = test_data['v2'].apply(preprocess_email)
     X_test_data = vectorizer.transform(test_data['processed_body'])
     y_test_data = test_data['v1']
     
-    # Predict using the model
+    #Predict using model
     y_pred = rf_model.predict(X_test_data)
     
-    # Generate classification report
+    #gen classification report
     report = classification_report(y_test_data, y_pred, output_dict=True)
     
-    # Extract the metrics for visualization
+    #extract metrics for visuals
     metrics = {
         'precision': [report['0']['precision'], report['1']['precision']],
         'recall': [report['0']['recall'], report['1']['recall']],
@@ -58,7 +58,7 @@ def test_email():
         'accuracy': [report['accuracy']],
     }
 
-    # Create a bar chart using Plotly
+    #create a bar chart using Plotly
     fig = go.Figure(data=[
         go.Bar(name='Precision', x=['Non-phishing', 'Phishing'], y=metrics['precision']),
         go.Bar(name='Recall', x=['Non-phishing', 'Phishing'], y=metrics['recall']),
@@ -72,7 +72,7 @@ def test_email():
         barmode='group'
     )
     
-    # Convert the figure to HTML
+    #convert figure to HTML
     graph_html = fig.to_html(full_html=False)
 
     return render_template('results.html', prediction=prediction, graph_html=graph_html)

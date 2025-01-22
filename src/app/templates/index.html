@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Phishing Detection</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Email Phishing Detection</h1>
+        
+        <!--email form-->
+        <form id="emailForm">
+            <div class="form-group">
+                <label for="email_text">Enter Email Text</label>
+                <textarea class="form-control" id="email_text" name="email_text" rows="10" placeholder="Paste the email content here..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Test Email</button>
+        </form>
+
+        <!-- results  -->
+        <div id="results" class="mt-5" style="display: none;">
+            <h3>Results</h3>
+            <p><strong>Prediction:</strong> <span id="prediction"></span></p>
+            <p><strong>Explanation:</strong></p>
+            <ul id="explanation"></ul>
+            <button class="btn btn-success" id="feedback-yes">This is correct</button>
+            <button class="btn btn-danger" id="feedback-no">This is incorrect</button>
+        </div>
+    </div>
+
+    <script>
+        //handle form submission with AJAX
+        $(document).ready(function () {
+            $("#emailForm").on("submit", function (e) {
+                e.preventDefault();
+
+                const emailText = $("#email_text").val();
+                if (!emailText) {
+                    alert("Please enter email text.");
+                    return;
+                }
+
+                //send email data to /upload_email endpoint
+                $.ajax({
+                    url: "/upload_email",
+                    method: "POST",
+                    data: { email_text: emailText },
+                    success: function (response) {
+                        //display prediction/explanation
+                        $("#results").show();
+                        $("#prediction").text(response.prediction);
+                        
+                        $("#explanation").empty();
+                        for (const [key, value] of Object.entries(response.explanation)) {
+                            $("#explanation").append(`<li>${key}: ${value}</li>`);
+                        }
+                    },
+                    error: function () {
+                        alert("Error processing the email. Please try again.");
+                    }
+                });
+            });
+
+            // handle feedback submission
+            $("#feedback-yes").on("click", function () {
+                submitFeedback(true);
+            });
+
+            $("#feedback-no").on("click", function () {
+                submitFeedback(false);
+            });
+
+            function submitFeedback(isCorrect) {
+                const feedback = {
+                    email_text: $("#email_text").val(),
+                    prediction: $("#prediction").text(),
+                    correct: isCorrect
+                };
+
+                $.ajax({
+                    url: "/feedback",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(feedback),
+                    success: function () {
+                        alert("Thank you for your feedback!");
+                        $("#results").hide();
+                        $("#emailForm")[0].reset();
+                    },
+                    error: function () {
+                        alert("Error submitting feedback. Please try again.");
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
