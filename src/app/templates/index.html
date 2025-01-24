@@ -12,13 +12,92 @@
         <h1>Email Phishing Detection</h1>
         
         <!--email form-->
-        <form id="emailForm">
-            <div class="form-group">
-                <label for="email_text">Enter Email Text</label>
-                <textarea class="form-control" id="email_text" name="email_text" rows="10" placeholder="Paste the email content here..."></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Test Email</button>
-        </form>
+        <div class="container mt-5">
+            <h1>Email Phishing Detection</h1>
+            <form id="uploadForm" action="/test_email" method="POST" enctype="multipart/form-data">
+                <div 
+                    id="dragDropArea" 
+                    class="drag-drop-area"
+                    ondragover="event.preventDefault()" 
+                    ondrop="handleDrop(event)"
+                >
+                    Drag and drop email file here (.html, .eml, or.txt) or click to browse
+                </div>
+                <input 
+                    type="file" 
+                    id="emailFileInput" 
+                    name="email_file" 
+                    accept=".txt,.html,.eml" 
+                    class="hidden" 
+                    onchange="handleFileSelect(event)"
+                >
+                <button type="submit" class="btn btn-primary mt-3" id="submitButton" disabled>Test Email</button>
+            </form>
+        </div>
+    
+        <script>
+            const dragDropArea = document.getElementById('dragDropArea');
+            const fileInput = document.getElementById('emailFileInput');
+            const submitButton = document.getElementById('submitButton');
+            let selectedFile = null;
+    
+            //handle drag/drop
+            function handleDrop(event) {
+                event.preventDefault();
+                dragDropArea.classList.remove('dragging');
+                const files = event.dataTransfer.files;
+                if (files.length) {
+                    processFile(files[0]);
+                }
+            }
+    
+            //highlight area drag
+            dragDropArea.addEventListener('dragover', () => {
+                dragDropArea.classList.add('dragging');
+            });
+    
+            //rm highlight when dragging ends
+            dragDropArea.addEventListener('dragleave', () => {
+                dragDropArea.classList.remove('dragging');
+            });
+    
+            //handle click to open file browser
+            dragDropArea.addEventListener('click', () => {
+                fileInput.click();
+            });
+    
+            //handle file selection from browser
+            function handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    processFile(file);
+                }
+            }
+    
+            //process selected file
+            function processFile(file) {
+                const validTypes = ['text/plain', 'text/html', 'message/rfc822']; ;
+                if (!validTypes.includes(file.type)) {
+                    alert('Please upload a valid .txt, .eml or .html file.');
+                    return;
+                }
+                selectedFile = file;
+                dragDropArea.textContent = `File Selected: ${file.name}`;
+                submitButton.disabled = false;
+            }
+    
+            //make sure file submitted with form
+            document.getElementById('uploadForm').addEventListener('submit', function(event) {
+                if (!selectedFile) {
+                    event.preventDefault();
+                    alert('Please select a file before submitting.');
+                    return;
+                }
+                //attach selected file to form
+                const formData = new FormData(this);
+                formData.set('email_file', selectedFile);
+            });
+        </script>
 
         <!-- results  -->
         <div id="results" class="mt-5" style="display: none;">
@@ -64,7 +143,7 @@
                 });
             });
 
-            // handle feedback submission
+            //handle feedback sub
             $("#feedback-yes").on("click", function () {
                 submitFeedback(true);
             });

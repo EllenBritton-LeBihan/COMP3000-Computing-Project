@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Results</title>
+    <title>Prediction Results</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-5">
-        <h1>Test Result</h1>
-        <h2>Email Classification: {% if prediction == 1 %}Phishing{% else %}Legitimate{% endif %}</h2>
-
+        <h1>Email Analysis Results</h1>
+        <p><strong>prediction:</strong> {{ 'Phishing' if prediction == 1 else 'Not Phishing' }}</p>
         <div>
-            <h3>Model Performance Metrics</h3>
-            <div>{{ graph_html | safe }}</div>
+            <h2>Confusion Matrix</h2>
+            <img src="{{ url_for('static', filename='confusion_matrix.png') }}" alt="Confusion Matrix">
+        </div>
+        <div>
+            <h2>Explanation</h2>
+            <p>{{ explanation }}</p>
         </div>
     </div>
 </body>

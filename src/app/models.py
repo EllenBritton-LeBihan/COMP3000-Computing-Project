@@ -3,7 +3,7 @@ import os
 
 
 def load_models():
-    #Absolute path to current file dir
+    #abs path to current file dir
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
     #build paths 
