@@ -24,7 +24,7 @@ def test_email():
         return "No file was uploaded", 400
 
     filename = uploaded_file.filename
-    file_ext = os.path.splitext(filename)[-1].lower()
+    file_ext = os.path.splitext(filename)[-1].lower() #work around
 
     if file_ext not in [".txt", ".html", ".eml"]:
         return "Invalid file type. Only .txt, .html, and .eml supported.", 400
@@ -63,8 +63,8 @@ def test_email():
         'accuracy': accuracy_score(y_test_data, y_pred),
     }
 
-    #save confusion matrix PNG
-    confusion_matrix_path = os.path.join('static', 'confusion_matrix.png')
+    #save confusion matrix as PNG
+    confusion_matrix_path = ("static/imgs/confusion_matrix.png")
     save_confusion_matrix(y_test_data, y_pred, confusion_matrix_path)
 
     #gen xplanation using OpenAI API

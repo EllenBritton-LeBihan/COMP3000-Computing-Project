@@ -8,11 +8,11 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1>Email Analysis Results</h1>
-        <p><strong>prediction:</strong> {{ 'Phishing' if prediction == 1 else 'Not Phishing' }}</p>
+        <h1>Email analysis results</h1>
+        <p><strong>Prediction:</strong> {{ 'Phishing' if prediction == 1 else 'Not Phishing' }}</p>
         <div>
             <h2>Confusion Matrix</h2>
-            <img src="{{ url_for('static', filename='confusion_matrix.png') }}" alt="Confusion Matrix">
+            <img src="{{ url_for('static', filename='imgs/confusion_matrix.png') }}" alt="Confusion Matrix">
         </div>
         <div>
             <h2>Explanation</h2>

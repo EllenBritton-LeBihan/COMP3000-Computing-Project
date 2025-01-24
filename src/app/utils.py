@@ -6,7 +6,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 import os
-from openai import OpenAI
 
 
 
@@ -32,46 +31,61 @@ def parse_eml_file(eml_content):
     
 
 
+
 #implementing openai api for better user exp
 def get_explanation_from_openai(confusion_matrix_data):
-    
+    from openai import OpenAI
+    import base64
+
     prompt = (
-        f"Explain the following confusion matrix results to a non-technical user:\n\n"
-        f"Confusion Matrix:\n"
-        f"True Positive (TP): {confusion_matrix_data['TP']}\n"
-        f"True Negative (TN): {confusion_matrix_data['TN']}\n"
-        f"False Positive (FP): {confusion_matrix_data['FP']}\n"
-        f"False Negative (FN): {confusion_matrix_data['FN']}\n\n"
-        f"Metrics:\n"
-        f"Precision: {confusion_matrix_data['precision']:.2f}\n"
-        f"Recall: {confusion_matrix_data['recall']:.2f}\n"
-        f"F1 Score: {confusion_matrix_data['f1_score']:.2f}\n"
-        f"Accuracy: {confusion_matrix_data['accuracy']:.2f}\n\n"
-        f"Provide the explanation in plain language suitable for a layperson."
+        f"Explain the following image of the confusion matrix results to a non-technical user:\n\n"
     )
     
-    try:
-        
-        openai.api_key= ""
+    #get path for img
+    crt_dir = os.path.dirname(__file__)
+    image_file_path = os.path.join(crt_dir, "static", "imgs", "confusion_matrix.png")
 
-        client = OpenAI()
-        
+
+
+    #encode to base64 and check if the file exists
+    if os.path.exists(image_file_path):
+        with open(image_file_path, "rb") as image_file:
+            base64_encoded_img = base64.b64encode(image_file.read()).decode("utf-8")
+    else:
+        return f"File not found: {image_file_path}"
+    
+
+    #init openai
+
+    client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY")
+    )
+
+    try:
         response = client.chat.completions.create(
             model="gpt-4o",  
+            max_tokens=300, #increase if getting cut off
             messages=[
-                {"role": "developer", "content": "You are a helpful assistant who explains technical concepts to non-technical users."},
-                {"role": "user", "content": prompt}
+                {
+                    "role": "user", 
+                    "content": prompt
+                },
+                {
+                    "role": "assistant", 
+                    "content": f"Here is the image:\ndata:image/png;base64,{base64_encoded_img}"
+                }
             ],
         )
 
-        explanation = response.choices[0].message
+        explanation = response.choices[0].message.content
         return explanation
-    except openai.OpenAIError as e:
+    
+    except Exception as e:
         #catch errors and rtrn
         return f"Error generating explanation: {str(e)}"
 
 
-def save_confusion_matrix(y_true, y_pred, labels, output_path="static/confusion_matrix.png"):
+def save_confusion_matrix(y_true, y_pred, labels, output_path="static/imgs/confusion_matrix.png"):
    
     cm = confusion_matrix(y_true, y_pred)
     plt.figure(figsize=(8, 6))
