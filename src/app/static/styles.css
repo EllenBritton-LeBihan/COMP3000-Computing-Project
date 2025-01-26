@@ -21,47 +21,38 @@
 .confusion-matrix {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 30px;
-  text-align: center;
-  font-size: 1rem;
-  color: #333;
+  margin: 20px 0;
 }
 
 .confusion-matrix th, .confusion-matrix td {
-  border: 1px solid #151515;
-  padding: 15px;
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+  font-size: 18px;
 }
 
 .confusion-matrix th {
-  background-color: #f0f8ff;
+  background-color: #f8f9fa;
   font-weight: bold;
 }
 
-.confusion-matrix tbody tr:nth-child(odd) {
-  background-color: #f0f8ff; 
-}
-
-.confusion-matrix tbody tr:nth-child(even) {
-  background-color: #f0f8ff;
-}
-
-/* header cell*/
-.confusion-matrix th:first-child {
-  text-align: left;
-  background-color: #f0f8ff;
-}
-
-/*highlight numbers */
 .confusion-matrix td {
-  font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 16px;
 }
 
-.confusion-matrix td:hover {
-  background-color: #007bff; /*hover */
-  cursor: default;
+.explanation-container, .confusion-matrix-metrics {
+  margin-top: 30px;
 }
 
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  padding: 5px;
+  font-size: 18px;
+}
 
 
 .explanation-container {

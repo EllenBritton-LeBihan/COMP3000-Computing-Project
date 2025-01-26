@@ -50,22 +50,31 @@ def test_email():
 
     #calc conf matrix
     cm = confusion_matrix(y_test_data, y_pred)
+    cm_list = cm.tolist() 
+
     metrics = {
         'True Positive': cm[1, 1],
         'True Negative': cm[0, 0],
         'False Positive': cm[0, 1],
         'False Negative': cm[1, 0],
     }
-
-    #gen xplanation using OpenAI API
-    explanation = get_explanation_from_openai(cm, metrics)
-
-    #render results
-    return jsonify({
-        'prediction': 'Phishing' if prediction == 1 else 'Not Phishing',
-        'explanation': explanation,
-    })
-
     
+    #gen xplanation using OpenAI API
+    explanation = get_explanation_from_openai(cm_list, metrics)
+
+    return render_template(
+        'results.html', 
+
+        prediction=prediction,
+        explanation=explanation,
+        confusion_matrix=cm_list,
+        metrics=metrics
+    )
+    '''return jsonify({
+        "prediction": int(prediction),
+        "explanation": explanation,
+        "confusion_matrix": cm_list,
+    })
+    '''
 
     

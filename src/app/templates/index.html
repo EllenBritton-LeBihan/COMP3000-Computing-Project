@@ -87,34 +87,66 @@
                 $('#submitButton').prop('disabled', false);
             }
             $("#uploadForm").on("submit", function (e) {
-        e.preventDefault();
+    e.preventDefault();
 
-        const formData = new FormData(this); //handles file data
-        if (!formData.get("email_file")) {
-            alert('Please select a file before submitting.');
-            return;
+    const formData = new FormData(this);
+    if (!formData.get("email_file")) {
+        alert('Please select a file before submitting.');
+        return;
+    }
+
+    $.ajax({
+        url: "/test_email",
+        method: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            // Show results section
+            $("#results").show();
+
+            // Display prediction
+            $("#prediction").text(response.prediction === 1 ? "Phishing" : "Not Phishing");
+
+            // Display explanation
+            $("#explanation").html(`<p>${response.explanation}</p>`);
+
+            // Display confusion matrix as a table
+            const matrix = response.confusion_matrix;
+            const tableHtml = `
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Predicted Non-Phishing</th>
+                            <th>Predicted Phishing</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Actual Non-Phishing</td>
+                            <td>${matrix[0][0]}</td>
+                            <td>${matrix[0][1]}</td>
+                        </tr>
+                        <tr>
+                            <td>Actual Phishing</td>
+                            <td>${matrix[1][0]}</td>
+                            <td>${matrix[1][1]}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+            $("#confusion-matrix").html(tableHtml);
+        },
+        error: function () {
+            alert("Error processing the email. Please try again.");
         }
-
-        $.ajax({
-            url: "/test_email", //flaks 
-            method: "POST",
-            data: formData,
-            contentType: false,
-            processData: false, //stop jQuery from processing data
-            success: function (response) {
-                //display
-                $("#results").show();
-                $("#prediction").text(response.prediction);
-                $("#explanation").empty();
-                for (const [key, value] of Object.entries(response.explanation)) {
-                    $("#explanation").append(`<li>${key}: ${value}</li>`);
-                }
-            },
-            error: function () {
-                alert("Error processing the email. Please try again.");
-            }
-        });
     });
+});
+
+        
+
+
 
     //handle drag events
     $('#dragDropArea').on('dragover', function () {
@@ -144,6 +176,7 @@ console.log(selectedFile);
             <button class="btn btn-danger" id="feedback-no">This is incorrect</button>
         </div>
     </div>
+
 
     <script>
         //handle form submission with AJAX
@@ -214,5 +247,7 @@ console.log(selectedFile);
             }
         });
     </script>
+
+    
 </body>
 </html>
