@@ -21,6 +21,8 @@ vectorizer = TfidfVectorizer(max_features=5000)
 X = vectorizer.fit_transform(data["processed_body"])
 y = data["label"]
 
+data.to_csv("src/data/training_data.csv", index=False)
+
 #split data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 

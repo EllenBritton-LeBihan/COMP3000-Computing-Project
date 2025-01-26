@@ -5,18 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prediction Results</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/styles.css') }}">
 </head>
 <body>
     <div class="container mt-5">
         <h1>Email analysis results</h1>
         <p><strong>Prediction:</strong> {{ 'Phishing' if prediction == 1 else 'Not Phishing' }}</p>
-        <div>
+        
+        <div class="explanation-container">
             <h2>Confusion Matrix</h2>
-            <img src="{{ url_for('static', filename='imgs/confusion_matrix.png') }}" alt="Confusion Matrix">
+            <table class="confusion-matrix">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Predicted: Not Phishing</th>
+                        <th>Predicted: Phishing</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Actual: Not Phishing</th>
+                        <td>{{ confusion_matrix[0][0] }}</td>
+                        <td>{{ confusion_matrix[0][1] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Actual: Phishing</th>
+                        <td>{{ confusion_matrix[1][0] }}</td>
+                        <td>{{ confusion_matrix[1][1] }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+
         <div>
             <h2>Explanation</h2>
             <p>{{ explanation }}</p>
+        </div>
+        <div>
+            <h2>Training Data Debugging</h2>
+            <p>Training Data Count: {{ training_data_count }}</p>
         </div>
     </div>
 </body>

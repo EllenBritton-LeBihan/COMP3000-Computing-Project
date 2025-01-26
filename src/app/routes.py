@@ -1,12 +1,8 @@
 from flask import Blueprint, request, render_template, current_app
 import pandas as pd
-import plotly.graph_objects as go
 from app.utils import preprocess_email, parse_eml_file, save_confusion_matrix, get_explanation_from_openai
 import os
-import seaborn as sns
-import matplotlib.pyplot as plt
-import io 
-import base64
+from flask import jsonify
 from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score, accuracy_score
 
 
@@ -18,16 +14,17 @@ def home():
 
 @main_blueprint.route('/test_email', methods = ['POST'])
 def test_email():
-    
+
     uploaded_file = request.files.get("email_file")
     if not uploaded_file:
-        return "No file was uploaded", 400
-
+        return jsonify({"error": "No file was uploaded"}), 400
+    
     filename = uploaded_file.filename
     file_ext = os.path.splitext(filename)[-1].lower() #work around
 
     if file_ext not in [".txt", ".html", ".eml"]:
-        return "Invalid file type. Only .txt, .html, and .eml supported.", 400
+        return jsonify({"error": "Invalid file type. Only .txt, .html, and .eml supported."}), 400
+
 
     # process file content
     if file_ext == ".eml":
@@ -42,6 +39,7 @@ def test_email():
     X_test = current_app.vectorizer.transform([processed_email])
     #predict with RF
     prediction = current_app.rf_model.predict(X_test)[0]
+    
 
     #load data for metrics
     test_data = pd.read_csv('data/test_email_dataset.csv')
@@ -53,30 +51,21 @@ def test_email():
     #calc conf matrix
     cm = confusion_matrix(y_test_data, y_pred)
     metrics = {
-        'TP': cm[1, 1],
-        'TN': cm[0, 0],
-        'FP': cm[0, 1],
-        'FN': cm[1, 0],
-        'precision': precision_score(y_test_data, y_pred),
-        'recall': recall_score(y_test_data, y_pred),
-        'f1_score': f1_score(y_test_data, y_pred),
-        'accuracy': accuracy_score(y_test_data, y_pred),
+        'True Positive': cm[1, 1],
+        'True Negative': cm[0, 0],
+        'False Positive': cm[0, 1],
+        'False Negative': cm[1, 0],
     }
 
-    #save confusion matrix as PNG
-    confusion_matrix_path = ("static/imgs/confusion_matrix.png")
-    save_confusion_matrix(y_test_data, y_pred, confusion_matrix_path)
-
     #gen xplanation using OpenAI API
-    explanation = get_explanation_from_openai(metrics)
+    explanation = get_explanation_from_openai(cm, metrics)
 
     #render results
-    return render_template(
-        'results.html',
-        prediction=prediction,
-        confusion_matrix_img=confusion_matrix_path,
-        explanation=explanation
-    )
+    return jsonify({
+        'prediction': 'Phishing' if prediction == 1 else 'Not Phishing',
+        'explanation': explanation,
+    })
+
     
 
     

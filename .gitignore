@@ -1,6 +1,9 @@
 *.log
 *.zip
 *.tar.gz
+#large files
 src/data/*.csv
 Documentation/
-venv/
+
+#sensitive env vars
+*.env

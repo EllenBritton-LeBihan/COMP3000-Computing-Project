@@ -15,3 +15,60 @@
 .hidden {
   display: none;
 }
+
+
+
+.confusion-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 1rem;
+  color: #333;
+}
+
+.confusion-matrix th, .confusion-matrix td {
+  border: 1px solid #151515;
+  padding: 15px;
+}
+
+.confusion-matrix th {
+  background-color: #f0f8ff;
+  font-weight: bold;
+}
+
+.confusion-matrix tbody tr:nth-child(odd) {
+  background-color: #f0f8ff; 
+}
+
+.confusion-matrix tbody tr:nth-child(even) {
+  background-color: #f0f8ff;
+}
+
+/* header cell*/
+.confusion-matrix th:first-child {
+  text-align: left;
+  background-color: #f0f8ff;
+}
+
+/*highlight numbers */
+.confusion-matrix td {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.confusion-matrix td:hover {
+  background-color: #007bff; /*hover */
+  cursor: default;
+}
+
+
+
+.explanation-container {
+  padding: 40px; 
+  margin-top: 60px;
+  background-color: #3d3d3d;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /*subtle shadow*/
+  color: #007bff;
+}
