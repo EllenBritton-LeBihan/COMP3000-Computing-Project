@@ -62,14 +62,11 @@ def test_email():
     #gen xplanation using OpenAI API
     explanation = get_explanation_from_openai(cm_list, metrics)
 
-    return render_template(
-        'results.html', 
-
-        prediction=prediction,
-        explanation=explanation,
-        confusion_matrix=cm_list,
-        metrics=metrics
-    )
+    return jsonify({
+    "prediction": int(prediction),
+    "explanation": explanation,
+    "confusion_matrix": cm_list,
+})
     '''return jsonify({
         "prediction": int(prediction),
         "explanation": explanation,

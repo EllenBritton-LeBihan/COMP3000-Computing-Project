@@ -95,6 +95,19 @@
         return;
     }
 
+    $("#toggle-matrix").on("click", function () {
+        const matrixDiv = $("#confusion-matrix");
+        const arrow = $("#matrix-arrow");
+
+        if (matrixDiv.is(":visible")) {
+            matrixDiv.slideUp(); // hide 
+            arrow.text("▼");    // change arrow direction
+        } else {
+            matrixDiv.slideDown(); // show 
+            arrow.text("▲");      // change arrow to up
+        }
+    });
+
     $.ajax({
         url: "/test_email",
         method: "POST",
@@ -102,7 +115,7 @@
         contentType: false,
         processData: false,
         success: function (response) {
-            // Show results section
+        //show results section
             $("#results").show();
 
             // Display prediction
@@ -111,36 +124,37 @@
             // Display explanation
             $("#explanation").html(`<p>${response.explanation}</p>`);
 
-            // Display confusion matrix as a table
+
+            //Display confusion matrix as a table
             const matrix = response.confusion_matrix;
-            const tableHtml = `
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Predicted Non-Phishing</th>
-                            <th>Predicted Phishing</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Actual Non-Phishing</td>
-                            <td>${matrix[0][0]}</td>
-                            <td>${matrix[0][1]}</td>
-                        </tr>
-                        <tr>
-                            <td>Actual Phishing</td>
-                            <td>${matrix[1][0]}</td>
-                            <td>${matrix[1][1]}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            `;
-            $("#confusion-matrix").html(tableHtml);
-        },
-        error: function () {
-            alert("Error processing the email. Please try again.");
-        }
+                const tableHtml = `
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Predicted Non-Phishing</th>
+                                <th>Predicted Phishing</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Actual Non-Phishing</td>
+                                <td>${matrix[0][0]}</td>
+                                <td>${matrix[0][1]}</td>
+                            </tr>
+                            <tr>
+                                <td>Actual Phishing</td>
+                                <td>${matrix[1][0]}</td>
+                                <td>${matrix[1][1]}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+                $("#confusion-matrix").html(tableHtml);
+            },
+            error: function () {
+                alert("Error processing the email. Please try again.");
+            }
     });
 });
 
@@ -171,6 +185,14 @@ console.log(selectedFile);
             <h3>Results</h3>
             <p><strong>Prediction:</strong> <span id="prediction"></span></p>
             <p><strong>Explanation:</strong></p>
+            <h4>Confusion Matrix
+            <button id="toggle-matrix" class="btn btn-link">
+                <span id="matrix-arrow">▼</span>
+            </button>
+            </h4>
+            <div id="confusion-matrix" class="mt-3" style="display: none;""></div>
+
+
             <ul id="explanation"></ul>
             <button class="btn btn-success" id="feedback-yes">This is correct</button>
             <button class="btn btn-danger" id="feedback-no">This is incorrect</button>
@@ -181,6 +203,9 @@ console.log(selectedFile);
     <script>
         //handle form submission with AJAX
         $(document).ready(function () {
+            
+                 
+
             $("#emailForm").on("submit", function (e) {
                 e.preventDefault();
 
@@ -214,6 +239,7 @@ console.log(selectedFile);
                 });
             });
 
+           
             //handle feedback sub
             $("#feedback-yes").on("click", function () {
                 submitFeedback(true);
