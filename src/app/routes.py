@@ -3,9 +3,22 @@ import pandas as pd
 from app.utils import preprocess_email, parse_eml_file, save_confusion_matrix, get_explanation_from_openai
 import os
 from flask import jsonify
+from werkzeug.utils import secure_filename
+import email
+import pickle
 from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score, accuracy_score
 
 
+#tryig again with new model, ignored last flask integration for now
+
+
+
+
+
+
+
+#IGNORING FOR NOW TRYING SOMETHNIG OUT
+'''
 main_blueprint = Blueprint("main", __name__) #construct
 
 @main_blueprint.route("/")
@@ -67,11 +80,12 @@ def test_email():
     "explanation": explanation,
     "confusion_matrix": cm_list,
 })
-    '''return jsonify({
+   return jsonify({
         "prediction": int(prediction),
         "explanation": explanation,
         "confusion_matrix": cm_list,
     })
-    '''
+   x
 
     
+'''
