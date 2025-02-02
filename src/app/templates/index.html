@@ -1,3 +1,58 @@
+
+<!-- trying a simpler html page for purpose of testing new rf model. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Email Detection</title>
+</head>
+<body>
+    <h1>Upload an Email for Phishing Detection</h1>
+
+    <!--disply flash msgs -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <!-- form for upload email -->
+    <form action="/" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".eml, .txt, .html" required>
+        <button type="submit">Upload and Predict</button>
+        <button type="submit" name="clear">Clear</button>  <!-- Clear button -->
+    </form>
+
+    <!--show prediction result -->
+    {% if prediction_result %}
+        <h3>{{ prediction_result }}</h3>
+    {% endif %}
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +66,7 @@
 <body>
     <div class="container mt-5">
         
-        <!--email form-->
+       
         <div class="container mt-5">
             <h1>Email Phishing Detection</h1>
             <form id="uploadForm" action="/test_email" method="POST" enctype="multipart/form-data">
@@ -180,7 +235,7 @@
 console.log(selectedFile);
         </script>
 
-        <!-- results  -->
+        results 
         <div id="results" class="mt-5" style="display: none;">
             <h3>Results</h3>
             <p><strong>Prediction:</strong> <span id="prediction"></span></p>
@@ -277,3 +332,4 @@ console.log(selectedFile);
     
 </body>
 </html>
+-->

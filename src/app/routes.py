@@ -1,8 +1,8 @@
-from flask import Blueprint, request, render_template, current_app
+from flask import Blueprint, request, render_template, current_app, F
 import pandas as pd
 from app.utils import preprocess_email, parse_eml_file, save_confusion_matrix, get_explanation_from_openai
 import os
-from flask import jsonify
+from flask import Flask
 from werkzeug.utils import secure_filename
 import email
 import pickle
@@ -11,7 +11,73 @@ from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_
 
 #tryig again with new model, ignored last flask integration for now
 
+#load new model
+with open("rf_model.pkl", "rb") as model_file:
+    model = pickle.load(model_file)
 
+app = Flask(__name__)
+UPLOAD_FOLDER = "uploads"
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+#ensure upload folder exists.
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+#func to extract email text from .eml files
+def extract_email_text(file_path):
+    with open(file_path, "rb", encoding="utf-8", errors="ignore") as f:
+        msg = email.message_from_file(f)
+        email_body = ""
+
+        if msg.is_multipart():
+            for part in msg.walk():
+                if part.get_content_type() == "text/plain":
+                    email_body += part.get_payload(decode=True).decode(errors="ignore")
+        else:
+            email_body= msg.get_payload(decode=True).decode(errors="ignore")
+    
+    return email_body
+
+#feature extraction func (to match trianing features)
+def extract_features(text):
+    num_urls = len(re.findall(r"https?://\S+", text))
+    avg_url_length = sum(len(url) for url in re.findall(r"https?://\S+", text)) / num_urls if num_urls > 0 else 0
+    num_special_chars = len(re.findall(r"[!@#$%^&*()_+={}\[\]:;\"'<>,.?/~`]", text))
+
+    return pd.DataFrame([[num_urls, avg_url_length, num_special_chars]],
+                        columns=["num_urls", "avg_url_lngth", "num_special_chars"])
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        if "file" not in request.files:
+            return "No file uploaded"
+        file = request.files["files"]
+        if file.filename == "":
+            return "No selected fle"
+        
+        #save file
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        file.save(file_path)
+
+        #extract text from email
+        email_text = extract_email_text(file_path)
+
+        #extract features
+        features = extract_features(email_text)
+
+        #predict phishing or not 
+        prediction = model.predict(features)[0]
+
+        #convert prediction to a label
+        result = "Phishing Email!" if prediction == 1 else "Legitimate Email"
+
+        return f"Prediciton: {result}"
+    return render_template("templates/index.html")
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 
 
