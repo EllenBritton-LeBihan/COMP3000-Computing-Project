@@ -1,4 +1,4 @@
-from flask import request, render_template, Flask, flash, redirect, url_for
+from flask import request, render_template, Flask, flash, redirect, url_for, session
 import pandas as pd
 import os
 from werkzeug.utils import secure_filename
@@ -22,6 +22,9 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 #ensure upload folder exists.
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+#store predictions history for confusion matrix
+session_data = {"y_true": [], "y_pred": []}
 
 #func to extract email text from .eml files
 def extract_email_text(file_path):
@@ -49,7 +52,7 @@ def extract_features(text):
 
     
     #linguistic/punctuation features
-    avg_sentence_lngth = sum(len(sentence.split()) for sentence in text.split('.')) / (len(text.split('.')) + 1) if len(text.split('.')) > 0 else 0 
+    avg_sentence_length = sum(len(sentence.split()) for sentence in text.split('.')) / (len(text.split('.')) + 1) if len(text.split('.')) > 0 else 0 
     #for each sentence n of words counted and calc avg. div by n of sentences.
     avg_word_length = sum(len(word) for word in text.split()) / (len(text.split()) + 1) if len(text.split()) > 0 else 0
     #split text into words sum lngths div total n of words.
@@ -70,27 +73,57 @@ def extract_features(text):
     num_shortened_urls = len(re.findall(r"https?://(?:bit\.ly|t\.co|goo\.gl)/\S+", text))
 
     #return 
-    return pd.DataFrame([[avg_sentence_lngth, avg_word_length, punctuation_count,
+    return pd.DataFrame([[avg_sentence_length, avg_word_length, punctuation_count,
                           exclamation_count, question_count, uppercase_ratio,
                           bigram_count, trigram_count, num_urls, avg_url_lngth,
                           imperative_word_count, politeness_word_count, num_special_chars,
                           readability_score, num_shortened_urls]],
-                        columns=["avg_sentence_lngth", "avg_word_length", "punctuation_count",
+                        columns=["avg_sentence_length", "avg_word_length", "punctuation_count",
                                  "exclamation_count", "question_count", "uppercase_ration",
                                  "readability_score", "bigram_count", "trigram_count", "num_urls", "num_shortened_urls",
                                  "avg_url_lngth", "imperative_word_count", "politeness_word_count", "num_special_chars",
                                 ])
-#'avg_sentence_lngth', 'avg_word_length', 'punctuation_count', 'exclamation_count', 'question_count', 
+#'avg_sentence_length', 'avg_word_length', 'punctuation_count', 'exclamation_count', 'question_count', 
 # 'uppercase_ration', 'readability_score', 'bigram_count', 'trigram_count', 'num_urls', 'num_shortened_urls', 
 # 'avg_url_lngth', 'imperative_word_count', 'politeness_word_count', 'num_special_chars'
 
 
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns 
+from sklearn.metrics import confusion_matrix
+def gen_conf_matrix(y_true, y_pred):
+    if len(y_true) != len(y_pred):
+        print("Error: y_true and y_pred have different lengths!")
+        return None #skip gen 
+    
+    
+    cm = confusion_matrix(y_true, y_pred)
+
+    #plot
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False, xticklabels=["Legitimate", "Phishing"], yticklabels=["Legitimate", "Phishing"])
+    plt.xlabel("Predicted")
+    plt.ylabel("Actual")
+    plt.title("Confusion Matrix")
+
+    #save to file
+    plot_path = "static/confusion_matrix.png"
+    plt.savefig(plot_path)
+    plt.close()
+    return plot_path
+
+
+#route
 @app.route("/", methods=["GET", "POST"])
 def index():
     prediction_result = None  # debugging
 
     if request.method == "POST":
         if "clear" in request.form:
+            session["y_true"]
+            session["y_pred"]
             flash("Form cleared. You can upload a new file.", "info")
             return redirect(url_for('index'))
         
@@ -115,7 +148,7 @@ def index():
         print(f"Extracted Features: {features}")
 
         #feature consistency
-        expected_features = ["avg_sentence_lngth", "avg_word_length", "punctuation_count",
+        expected_features = ["avg_sentence_length", "avg_word_length", "punctuation_count",
                                  "exclamation_count", "question_count", "uppercase_ration",
                                  "readability_score", "bigram_count", "trigram_count", "num_urls", "num_shortened_urls",
                                  "avg_url_lngth", "imperative_word_count", "politeness_word_count", "num_special_chars",
@@ -133,12 +166,43 @@ def index():
         prediction = model.predict(features)[0]
         prediction_result = "Phishing Email" if prediction == 1 else "Legitimate Email"  
         print(f"Prediction: {prediction_result}")
+        
+        
+        session_data["y_pred"].append(prediction)
 
-        flash(f"Prediction: {prediction_result}", "success")  
-        return redirect(url_for('index'))
+        
+        flash(f"Prediction: {prediction_result}", "success") 
+        session["last_prediction"] = prediction_result
+
+        return redirect(url_for('label_email'))
     
-    return render_template("index.html", prediction_result=prediction_result)
+    return render_template("index.html", prediction_result=session.get("last_prediction"))
 
+
+@app.route("/label", methods=["GET", "POST"])
+def label_email():
+    if request.method == "POST":
+        true_label = int(request.form.get("true_label"))
+        session_data["y_true"].append(true_label)
+
+        if len(session_data["y_true"]) > 1:
+            gen_conf_matrix(session_data["y_true"], session_data["y_pred"])
+
+        return redirect(url_for("index"))
+
+    return render_template("label.html")  #page where user selects actual label
+
+def gen_conf_matrix(y_true, y_pred):
+    print(f"y_true: {y_true}, y_pred: {y_pred}")
+    print(f"Lengths -> y_true: {len(y_true)}, y_pred: {len(y_pred)}")
+    cm = confusion_matrix(y_true, y_pred)
+    plt.figure(figsize=(5, 4))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["Legitimate", "Phishing"], yticklabels=["Legitimate", "Phishing"])
+    plt.xlabel("Predicted")
+    plt.ylabel("Actual")
+    plt.title("Confusion Matrix")
+    plt.savefig("static/confusion_matrix.png")
+    plt.close()
 
 if __name__ == "__main__":
     app.run(debug=True)

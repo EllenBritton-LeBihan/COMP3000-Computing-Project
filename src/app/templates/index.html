@@ -6,6 +6,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phishing Email Detection</title>
+    <style>
+        /*style for collapsible section */
+        .collapsible {
+            background-color: #777;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .active, .collapsible:hover {
+            background-color: #555;
+        }
+
+        .content {
+            padding: 0 18px;
+            display: none;
+            overflow: hidden;
+            background-color: #f1f1f1;
+        }
+    </style>
 </head>
 <body>
     <h1>Upload an Email for Phishing Detection</h1>
@@ -32,6 +57,42 @@
     {% if prediction_result %}
         <h3>{{ prediction_result }}</h3>
     {% endif %}
+
+     <!-- Prediction result -->
+     <h2>Prediction: {{ prediction_result }}</h2>
+    
+     <!-- Confusion Matrix -->
+     <h3>Confusion Matrix</h3>
+     <img src="{{ url_for('static', filename='confusion_matrix.png') }}" alt="Confusion Matrix">
+ 
+     <!-- Collapsible Section for TP, TN, FP, FN -->
+     <button class="collapsible">Click to see detailed metrics</button>
+     <div class="content">
+         <h4>True Positives (TP):</h4>
+         <p>The number of times the model correctly predicted a positive class (Phishing Email).</p>
+         <h4>True Negatives (TN):</h4>
+         <p>The number of times the model correctly predicted a negative class (Legitimate Email).</p>
+         <h4>False Positives (FP):</h4>
+         <p>The number of times the model incorrectly predicted a positive class (Phishing Email, but it was legitimate).</p>
+         <h4>False Negatives (FN):</h4>
+         <p>The number of times the model incorrectly predicted a negative class (Legitimate Email, but it was phishing).</p>
+     </div>
+ 
+     <script>
+         // JavaScript for the collapsible section
+         var coll = document.getElementsByClassName("collapsible");
+         for (var i = 0; i < coll.length; i++) {
+             coll[i].addEventListener("click", function() {
+                 this.classList.toggle("active");
+                 var content = this.nextElementSibling;
+                 if (content.style.display === "block") {
+                     content.style.display = "none";
+                 } else {
+                     content.style.display = "block";
+                 }
+             });
+         }
+     </script>
 </body>
 </html>
 
