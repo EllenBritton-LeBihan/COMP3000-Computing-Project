@@ -58,28 +58,30 @@
         <h3>{{ prediction_result }}</h3>
     {% endif %}
 
-     <!-- Prediction result -->
+     <!--pred res -->
      <h2>Prediction: {{ prediction_result }}</h2>
     
-     <!-- Confusion Matrix -->
+     <!--confusion mtrx -->
      <h3>Confusion Matrix</h3>
      <img src="{{ url_for('static', filename='confusion_matrix.png') }}" alt="Confusion Matrix">
  
-     <!-- Collapsible Section for TP, TN, FP, FN -->
+     <!--collapsible Section for TP, TN, FP, FN -->
      <button class="collapsible">Click to see detailed metrics</button>
      <div class="content">
-         <h4>True Positives (TP):</h4>
+         <h4>True Positives (TP) -- Bottom right:</h4>
          <p>The number of times the model correctly predicted a positive class (Phishing Email).</p>
-         <h4>True Negatives (TN):</h4>
+         <h4>True Negatives (TN) -- Top Left:</h4>
          <p>The number of times the model correctly predicted a negative class (Legitimate Email).</p>
-         <h4>False Positives (FP):</h4>
+         <h4>False Positives (FP) -- Top right:</h4>
          <p>The number of times the model incorrectly predicted a positive class (Phishing Email, but it was legitimate).</p>
-         <h4>False Negatives (FN):</h4>
+         <h4>False Negatives (FN) -- Bottom Left:</h4>
          <p>The number of times the model incorrectly predicted a negative class (Legitimate Email, but it was phishing).</p>
      </div>
+
+     
  
      <script>
-         // JavaScript for the collapsible section
+         // Js for the collapsible section
          var coll = document.getElementsByClassName("collapsible");
          for (var i = 0; i < coll.length; i++) {
              coll[i].addEventListener("click", function() {
