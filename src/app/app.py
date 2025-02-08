@@ -6,6 +6,7 @@ import email
 import re
 import pickle
 import textstat
+import email
 
 #tryig again with new model, ignored last flask integration for now
 
@@ -89,13 +90,50 @@ def extract_features(text):
 
 
 
+def extract_email_headers(file_path):
+    with open(file_path, "rb") as f:
+        msg = email.message_from_binary_file(f)
+
+    dkim_hdr = None
+    spf_hdr = None
+    dmarc_hdr = None
+
+    #search dkim-sig, spf and dmarc headers in email
+    for header, value in msg.items():
+        if header.lower() == "dkim-signature":
+            dkim_hdr = value
+        elif header.lower() == "spf":
+            spf_header = value
+        elif header.lower() == "dmarc":
+            dmarc_header = value
+
+    return dkim_hdr, spf_hdr, dmarc_hdr
+
+def verify_email_auth(dkim_hdr, spf_hdr, dmarc_hdr):
+    """verify dkim spf dmarc hdrs to classify email authenticity"""
+
+    #dkim-sig check present in header and contains valid domain
+    dkim_valid = dkim_hdr is not None and "v=1" in dkim_hdr # simplified 
+
+    #spf check header tindicates email passed
+    spf_valid = spf_hdr is not None and "pass" in spf_hdr.lower() #check pass
+
+    #dmarc check header indicates pass or policy
+    dmarc_valid = dmarc_hdr is not None and "pass" in dmarc_hdr.lower()
+
+    #combine checks if all passed email legit
+    if dkim_valid and spf_valid and dmarc_valid:
+        return 0 #legit
+    else:
+        return 1 # potential phishing mail
+    
 
 import matplotlib.pyplot as plt
 import seaborn as sns 
 from sklearn.metrics import confusion_matrix
 def gen_conf_matrix(y_true, y_pred):
-    if len(y_true) != len(y_pred):
-        print("Error: y_true and y_pred have different lengths!")
+    if len(y_true) != len(y_pred) or len(y_true) == 0:
+        print(f"Skip confusion matrix: y_true={len(y_true)}, y_pred={len(y_pred)}")
         return None #skip gen 
     
     
@@ -115,9 +153,14 @@ def gen_conf_matrix(y_true, y_pred):
     return plot_path
 
 
+
+
 #route
 @app.route("/", methods=["GET", "POST"])
 def index():
+    session.setdefault("y_true", [])
+    session.setdefault("y_pred", [])
+
     prediction_result = None  # debugging
 
     if request.method == "POST":
@@ -168,29 +211,45 @@ def index():
         print(f"Prediction: {prediction_result}")
         
         
-        session_data["y_pred"].append(prediction)
+        #extract headers from dkim spf dmarc checks
+        dkim_hdr, spf_hdr, dmarc_hdr = extract_email_headers(file_path)
 
-        
+        #verify email authen based on hdrs
+        actual_label = verify_email_auth(dkim_hdr, spf_hdr, dmarc_hdr)
+
+        session_data["y_true"].append(actual_label)
+        session_data["y_pred"].append(prediction)
+        print(f"Updated y_true: {session_data['y_true']}")
+        print(f"Updated y_pred: {session_data['y_pred']}")
+
+        #gen confusion matrix only if at least 2 predictions exist
+        if len(session_data["y_true"]) > 1:
+            gen_conf_matrix(session["y_true"], session_data["y_pred"])
+
+
         flash(f"Prediction: {prediction_result}", "success") 
         session["last_prediction"] = prediction_result
 
-        return redirect(url_for('label_email'))
+        #return redirect(url_for('label_email'))
     
     return render_template("index.html", prediction_result=session.get("last_prediction"))
-
-
+'''
 @app.route("/label", methods=["GET", "POST"])
 def label_email():
+    if "y_true" not in session:
+        session["y_true"] = []
+    if "y_pred" not in session:
+        session["y_pred"] = []
+
     if request.method == "POST":
         true_label = int(request.form.get("true_label"))
-        session_data["y_true"].append(true_label)
+        session["y_true"].append(true_label)
 
-        if len(session_data["y_true"]) > 1:
-            gen_conf_matrix(session_data["y_true"], session_data["y_pred"])
+        if len(session["y_true"]) == len(session["y_pred"]):  # Ensure equal lengths
+            gen_conf_matrix(session["y_true"], session["y_pred"])
 
         return redirect(url_for("index"))
-
-    return render_template("label.html")  #page where user selects actual label
+'''
 
 def gen_conf_matrix(y_true, y_pred):
     print(f"y_true: {y_true}, y_pred: {y_pred}")
