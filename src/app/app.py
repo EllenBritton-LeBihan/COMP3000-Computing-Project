@@ -7,6 +7,8 @@ import re
 import pickle
 import textstat
 import email
+import email.policy
+
 
 #tryig again with new model, ignored last flask integration for now
 
@@ -30,9 +32,9 @@ session_data = {"y_true": [], "y_pred": []}
 #func to extract email text from .eml files
 def extract_email_text(file_path):
     with open(file_path, "rb") as f:
-        msg = email.message_from_binary_file(f)
-        email_body = ""
+        msg = email.message_from_binary_file(f, policy=email.policy.default)
 
+        email_body = ""
         if msg.is_multipart():
             for part in msg.walk():
                 if part.get_content_type() == "text/plain":
@@ -40,7 +42,27 @@ def extract_email_text(file_path):
         else:
             email_body= msg.get_payload(decode=True).decode(errors="ignore")
     
-    return email_body
+
+    #extract auth 
+    dkim_pass = False
+    spf_pass = False
+    dmarc_pass = False
+
+    headers = dict(msg.items()) #to dict
+    auth_res = headers.get("authentication-Results", "")
+
+    #check res
+    if "dkim=pass" in auth_res:
+            dkim_pass = True
+    if "spf=pass" in auth_res:
+        spf_pass = True
+    if "dmarc=pass" in auth_res:
+        dmarc_pass = True   
+
+    y_true_label = 0 if dkim_pass and spf_pass and dmarc_pass else 1
+
+    return email_body, y_true_label # should return exactly 2 vals
+
 
 #feature extraction func (to match trianing features)
 def extract_features(text):
@@ -89,43 +111,6 @@ def extract_features(text):
 # 'avg_url_lngth', 'imperative_word_count', 'politeness_word_count', 'num_special_chars'
 
 
-
-def extract_email_headers(file_path):
-    with open(file_path, "rb") as f:
-        msg = email.message_from_binary_file(f)
-
-    dkim_hdr = None
-    spf_hdr = None
-    dmarc_hdr = None
-
-    #search dkim-sig, spf and dmarc headers in email
-    for header, value in msg.items():
-        if header.lower() == "dkim-signature":
-            dkim_hdr = value
-        elif header.lower() == "spf":
-            spf_header = value
-        elif header.lower() == "dmarc":
-            dmarc_header = value
-
-    return dkim_hdr, spf_hdr, dmarc_hdr
-
-def verify_email_auth(dkim_hdr, spf_hdr, dmarc_hdr):
-    """verify dkim spf dmarc hdrs to classify email authenticity"""
-
-    #dkim-sig check present in header and contains valid domain
-    dkim_valid = dkim_hdr is not None and "v=1" in dkim_hdr # simplified 
-
-    #spf check header tindicates email passed
-    spf_valid = spf_hdr is not None and "pass" in spf_hdr.lower() #check pass
-
-    #dmarc check header indicates pass or policy
-    dmarc_valid = dmarc_hdr is not None and "pass" in dmarc_hdr.lower()
-
-    #combine checks if all passed email legit
-    if dkim_valid and spf_valid and dmarc_valid:
-        return 0 #legit
-    else:
-        return 1 # potential phishing mail
     
 
 import matplotlib.pyplot as plt
@@ -186,9 +171,9 @@ def index():
         file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
         file.save(file_path)
 
-        email_text = extract_email_text(file_path)
-        features = extract_features(email_text)
-        print(f"Extracted Features: {features}")
+        #unpack 2 vals 
+        email_text, y_true_label = extract_email_text(file_path)
+
 
         #feature consistency
         expected_features = ["avg_sentence_length", "avg_word_length", "punctuation_count",
@@ -197,33 +182,41 @@ def index():
                                  "avg_url_lngth", "imperative_word_count", "politeness_word_count", "num_special_chars",
                                 ]
         
-     
+        features = extract_features(email_text)
+        print(f"Extracted Features:", features.shape)
+
+        #extract features predict us
         for feature in expected_features:
             if feature not in features.columns:
                 features[feature] = 0 
-
         features = features[expected_features]
 
-
+        if features.empty:
+            flash("Error extracted features are empty", "error")
+            return redirect(url_for('index'))
+        
 
         prediction = model.predict(features)[0]
         prediction_result = "Phishing Email" if prediction == 1 else "Legitimate Email"  
         print(f"Prediction: {prediction_result}")
         
         
-        #extract headers from dkim spf dmarc checks
-        dkim_hdr, spf_hdr, dmarc_hdr = extract_email_headers(file_path)
 
-        #verify email authen based on hdrs
-        actual_label = verify_email_auth(dkim_hdr, spf_hdr, dmarc_hdr)
-
-        session_data["y_true"].append(actual_label)
+        session_data["y_true"].append(y_true_label)
         session_data["y_pred"].append(prediction)
+        session.modified = True
+        #debig
+        print(f"y_true_label: {y_true_label}") 
         print(f"Updated y_true: {session_data['y_true']}")
         print(f"Updated y_pred: {session_data['y_pred']}")
 
         #gen confusion matrix only if at least 2 predictions exist
-        if len(session_data["y_true"]) > 1:
+        if len(session_data["y_true"]) > 1 != len(session_data["y_pred"]):
+            flash("Warning y_true and y_pred lengths don't match.", "warning")
+            session_data["y_true"].clear()
+            session_data["y_pred"].clear()
+            return redirect(url_for('index'))
+        
             gen_conf_matrix(session["y_true"], session_data["y_pred"])
 
 
@@ -231,6 +224,7 @@ def index():
         session["last_prediction"] = prediction_result
 
         #return redirect(url_for('label_email'))
+        return redirect(url_for('index'))
     
     return render_template("index.html", prediction_result=session.get("last_prediction"))
 '''
