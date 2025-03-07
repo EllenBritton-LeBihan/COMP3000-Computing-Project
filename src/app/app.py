@@ -10,11 +10,12 @@ import email
 import email.policy
 
 
-#tryig again with new model, ignored last flask integration for now
+#updated code organisation, this is now primary app.py
 
 app = Flask(__name__)
 app.secret_key = "secret_key"
-#load new model
+
+#load the trained model
 with open("rf_model.pkl", "rb") as model_file:
     model = pickle.load(model_file)
 
@@ -26,7 +27,7 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 #ensure upload folder exists.
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-#store predictions history for confusion matrix
+#store predictions history for confusion matrix -- not using a conf matrix anymore.
 session_data = {"y_true": [], "y_pred": []}
 
 #func to extract email text from .eml files
@@ -34,10 +35,11 @@ def extract_email_text(file_path):
     with open(file_path, "rb") as f:
         msg = email.message_from_binary_file(f, policy=email.policy.default)
 
+        #mke sure integrates with imported figma index.html
         email_body = ""
         if msg.is_multipart():
             for part in msg.walk():
-                if part.get_content_type() == "text/plain":
+                if part.get_content_type() == "text/plain": 
                     email_body += part.get_payload(decode=True).decode(errors="ignore")
         else:
             email_body= msg.get_payload(decode=True).decode(errors="ignore")
@@ -106,13 +108,14 @@ def extract_features(text):
                                  "readability_score", "bigram_count", "trigram_count", "num_urls", "num_shortened_urls",
                                  "avg_url_lngth", "imperative_word_count", "politeness_word_count", "num_special_chars",
                                 ])
+#REMOVE
 #'avg_sentence_length', 'avg_word_length', 'punctuation_count', 'exclamation_count', 'question_count', 
 # 'uppercase_ration', 'readability_score', 'bigram_count', 'trigram_count', 'num_urls', 'num_shortened_urls', 
 # 'avg_url_lngth', 'imperative_word_count', 'politeness_word_count', 'num_special_chars'
 
 
     
-
+#REMOVE not using matrix anymore 
 import matplotlib.pyplot as plt
 import seaborn as sns 
 from sklearn.metrics import confusion_matrix
@@ -148,6 +151,7 @@ def index():
 
     prediction_result = None  # debugging
 
+    #issue with "clear" btn sometimes !!
     if request.method == "POST":
         if "clear" in request.form:
             session["y_true"]
@@ -155,7 +159,7 @@ def index():
             flash("Form cleared. You can upload a new file.", "info")
             return redirect(url_for('index'))
         
-
+        #logic SHOULD be fine for integration
         if "file" not in request.files:
             flash("No file uploaded", "error")
             return redirect(request.url)
