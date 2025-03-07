@@ -9,7 +9,7 @@ import pickle
 from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score, accuracy_score
 
 
-#tryig again with new model, ignored last flask integration for now
+#updated code organisation, this is now primary routes.py
 
 #load new model
 with open("rf_model.pkl", "rb") as model_file:
