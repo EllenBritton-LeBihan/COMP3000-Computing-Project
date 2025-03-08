@@ -11,13 +11,13 @@
     <div class="sidebar">
         <h2>PhishNet</h2>
         <ul>
-            <li>Dashboard</li>
-            <li>History</li>
-            <li>Preferences</li>
+            <li><a href="{{ url_for(filename='index') }}" class="nav-link">Dashboard</a></li>
+            <li><a href="{{ url_for(filename='history') }}" class="nav-link">History</a></li>
+            <li><a href="{{ url_for(filename='preferences') }}" class="nav-link">Preferences</a></li>
         </ul>
     </div>
     <div class="container">
-        <h1>PhishNet Detection Tool</h1>
+        <h1>PhishNet Email Phishing Detection Tool</h1>
         <form action="/" method="post" enctype="multipart/form-data">
             <div class="upload-box">
                 <p>Drag and drop or click "Choose Files"</p>

@@ -27,7 +27,11 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 #ensure upload folder exists.
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-#store predictions history for confusion matrix -- not using a conf matrix anymore.
+#to store histroy of predictions
+history = []
+
+
+#ARCHIVED store predictions history for confusion matrix -- not using a conf matrix anymore.
 session_data = {"y_true": [], "y_pred": []}
 
 #func to extract email text from .eml files
@@ -108,39 +112,6 @@ def extract_features(text):
                                  "readability_score", "bigram_count", "trigram_count", "num_urls", "num_shortened_urls",
                                  "avg_url_lngth", "imperative_word_count", "politeness_word_count", "num_special_chars",
                                 ])
-#REMOVE
-#'avg_sentence_length', 'avg_word_length', 'punctuation_count', 'exclamation_count', 'question_count', 
-# 'uppercase_ration', 'readability_score', 'bigram_count', 'trigram_count', 'num_urls', 'num_shortened_urls', 
-# 'avg_url_lngth', 'imperative_word_count', 'politeness_word_count', 'num_special_chars'
-
-
-    
-#REMOVE not using matrix anymore 
-import matplotlib.pyplot as plt
-import seaborn as sns 
-from sklearn.metrics import confusion_matrix
-def gen_conf_matrix(y_true, y_pred):
-    if len(y_true) != len(y_pred) or len(y_true) == 0:
-        print(f"Skip confusion matrix: y_true={len(y_true)}, y_pred={len(y_pred)}")
-        return None #skip gen 
-    
-    
-    cm = confusion_matrix(y_true, y_pred)
-
-    #plot
-    plt.figure(figsize=(6, 4))
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False, xticklabels=["Legitimate", "Phishing"], yticklabels=["Legitimate", "Phishing"])
-    plt.xlabel("Predicted")
-    plt.ylabel("Actual")
-    plt.title("Confusion Matrix")
-
-    #save to file
-    plot_path = "static/confusion_matrix.png"
-    plt.savefig(plot_path)
-    plt.close()
-    return plot_path
-
-
 
 
 #route
@@ -204,6 +175,8 @@ def index():
         prediction_result = "Phishing Email" if prediction == 1 else "Legitimate Email"  
         print(f"Prediction: {prediction_result}")
         
+        #Add to history here
+        history.append({"filename": filename, "prediction": prediction_result})
         
 
         session_data["y_true"].append(y_true_label)
@@ -214,6 +187,7 @@ def index():
         print(f"Updated y_true: {session_data['y_true']}")
         print(f"Updated y_pred: {session_data['y_pred']}")
 
+
         #gen confusion matrix only if at least 2 predictions exist
         if len(session_data["y_true"]) > 1 != len(session_data["y_pred"]):
             flash("Warning y_true and y_pred lengths don't match.", "warning")
@@ -221,9 +195,7 @@ def index():
             session_data["y_pred"].clear()
             return redirect(url_for('index'))
         
-            gen_conf_matrix(session["y_true"], session_data["y_pred"])
-
-
+            
         flash(f"Prediction: {prediction_result}", "success") 
         session["last_prediction"] = prediction_result
 
@@ -231,35 +203,11 @@ def index():
         return redirect(url_for('index'))
     
     return render_template("index.html", prediction_result=session.get("last_prediction"))
-'''
-@app.route("/label", methods=["GET", "POST"])
-def label_email():
-    if "y_true" not in session:
-        session["y_true"] = []
-    if "y_pred" not in session:
-        session["y_pred"] = []
 
-    if request.method == "POST":
-        true_label = int(request.form.get("true_label"))
-        session["y_true"].append(true_label)
-
-        if len(session["y_true"]) == len(session["y_pred"]):  # Ensure equal lengths
-            gen_conf_matrix(session["y_true"], session["y_pred"])
-
-        return redirect(url_for("index"))
-'''
-
-def gen_conf_matrix(y_true, y_pred):
-    print(f"y_true: {y_true}, y_pred: {y_pred}")
-    print(f"Lengths -> y_true: {len(y_true)}, y_pred: {len(y_pred)}")
-    cm = confusion_matrix(y_true, y_pred)
-    plt.figure(figsize=(5, 4))
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["Legitimate", "Phishing"], yticklabels=["Legitimate", "Phishing"])
-    plt.xlabel("Predicted")
-    plt.ylabel("Actual")
-    plt.title("Confusion Matrix")
-    plt.savefig("static/confusion_matrix.png")
-    plt.close()
+#route for history
+@app.route("/history")
+def history_page():
+    return render_template("history.html", history=history) #load history.html to display
 
 if __name__ == "__main__":
     app.run(debug=True)
