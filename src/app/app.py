@@ -8,6 +8,7 @@ import pickle
 import textstat
 import email
 import email.policy
+from datetime import datetime #to add datetime to history page.
 
 
 #updated code organisation, this is now primary app.py
@@ -176,7 +177,10 @@ def index():
         print(f"Prediction: {prediction_result}")
         
         #Add to history here
-        history.append({"filename": filename, "prediction": prediction_result})
+        history.append({"filename": filename, 
+                        "prediction": prediction_result,
+                        "date": datetime.now().strftime("%m/%d/%Y")
+                        })
         
 
         session_data["y_true"].append(y_true_label)
@@ -202,6 +206,9 @@ def index():
         #return redirect(url_for('label_email'))
         return redirect(url_for('index'))
     
+    
+    
+
     return render_template("index.html", prediction_result=session.get("last_prediction"))
 
 #route for history

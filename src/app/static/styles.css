@@ -2,14 +2,19 @@
 body {
   font-family: Arial, sans-serif;
   background: linear-gradient(to right, #233d4d, #a1c4fd);
-  color: #e0e0e0;
+  color: #3735d1ff;
   margin: 0;
   padding: 0;
   display: flex;
 }
 .sidebar {
   width: 250px;
-  background: #2c3e50;
+  background: linear-gradient(
+    180deg,
+    #a9cdcaff 0%,
+    #1b1942d9 99%,
+    #8da6a6ff 100%
+  );
   padding: 20px;
   height: 100vh;
 }
@@ -18,7 +23,7 @@ body {
   padding: 20px;
 }
 .upload-box {
-  border: 2px dashed #ccc;
+  border: 2px dashed #000000;
   padding: 20px;
   text-align: center;
   width: 60%;
@@ -31,7 +36,7 @@ body {
   margin-top: 10px;
 }
 .analytics {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(8, 100, 133, 0.11);
   padding: 20px;
   border-radius: 10px;
   text-align: center;
@@ -40,3 +45,66 @@ body {
 }
 
 /*Generated with Duality Figma Plugin 
+
+
+
+
+-------history.html-------- 
+*/
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(200.36deg,  #cdfdf9ff 0%, #567072a3 87%);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  color: #222;
+}
+
+.container {
+  width: 80%;
+  margin: 40px auto;
+}
+
+.title {
+  color: #2a1cc9;
+  font-size: 32px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th, .history-table td {
+  padding: 12px;
+  text-align: left;
+}
+
+.history-table th {
+  color: #2a1cc9;
+}
+
+.history-table tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.score-bar {
+  width: 50px;
+  height: 20px;
+  background-color: navy;
+  border-radius: 8px;
+}
+
+.prediction {
+  font-weight: bold;
+}
+
+.prediction.phishing {
+  color: crimson;
+}
+
+.prediction.legitimate {
+  color: lightseagreen;
+}
+
+/* Generated with Duality Figma Plugin */
