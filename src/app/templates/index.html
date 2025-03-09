@@ -18,9 +18,9 @@
     <div class="container">
         <h1>PhishNet Email Phishing Detection Tool</h1>
         <form action="/" method="post" enctype="multipart/form-data">
-            <div class="upload-box">
+            <div class="upload-box" id="drop-area"> <!-- for drag and drop func-->
                 <p>Drag and drop or click "Choose Files"</p>
-                <input type="file" name="file">
+                <input type="file" name="file" id="file-input">
             </div>
             <div class="buttons">
                 <button type="submit">Upload & Predict</button>
@@ -33,6 +33,40 @@
             </div>
         {% endif %}
     </div>
+
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let dropArea = document.getElementById("drop-area");
+            let fileInput = document.getElementById("file-input");
+
+            //stop any default drag in behaviours
+            ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            //highlight on drg
+            ["dragenter", "dragover"].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => dropArea.classList.add("highlight"), false);
+            });
+
+            ["dragleave", "drop"].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => dropArea.classList.remove("highlight"), false);
+            });
+
+            //for handling dropped fles
+            dropArea.addEventListener("drop", function (e) {
+                let dt = e.dataTransfer;
+                let files = dt.files;
+                fileInput.files = files; //assign to input
+            });
+        });
+    </script>
 </body>
 </html>
 

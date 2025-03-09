@@ -8,6 +8,7 @@ import pickle
 import textstat
 import email
 import email.policy
+import numpy as np
 from datetime import datetime #to add datetime to history page.
 
 
@@ -49,16 +50,16 @@ def extract_email_text(file_path):
         else:
             email_body= msg.get_payload(decode=True).decode(errors="ignore")
     
-
-    #extract auth 
+    ##need to return the auth failures and make it a feature in the model.
+    ''' #extract auth 
     dkim_pass = False
     spf_pass = False
-    dmarc_pass = False
+    dmarc_pass = False'''
 
     headers = dict(msg.items()) #to dict
-    auth_res = headers.get("authentication-Results", "")
+    auth_res = headers.get("authentication-Results", "").lower()
 
-    #check res
+    '''#check res
     if "dkim=pass" in auth_res:
             dkim_pass = True
     if "spf=pass" in auth_res:
@@ -67,8 +68,43 @@ def extract_email_text(file_path):
         dmarc_pass = True   
 
     y_true_label = 0 if dkim_pass and spf_pass and dmarc_pass else 1
+'''
 
-    return email_body, y_true_label # should return exactly 2 vals
+    dkim_fail = "dkim=fail" in auth_res
+    spf_fail = "spf=fail" in auth_res
+    dmarc_fail = "dmarc=fail" in auth_res
+
+    return email_body, dkim_fail, spf_fail, dmarc_fail
+#y_true_label # should return exactly 2 vals
+
+
+def calc_sus_score(ml_prob):
+    #need to compute sus score based on the ml model probabilty output.
+    if ml_prob >= 0.8:
+        severity = "High"
+        score = 5
+    elif ml_prob >= 0.6:
+        severity = "Medium"
+        score = 3
+    elif ml_prob >= 0.4:
+        severity = "Low"
+        score = 1
+    else:
+        severity = "None"
+        score = 0
+    
+    return score, severity
+
+#for sus email content to be highlighted for better user interaction.
+def highlight_sus_content(email_text, vectorizer, model):
+    #highlighted words based on importance in ml model
+    words = vectorizer.get_feature_names_out()
+    feature_importances = np.mean([tree.feature_importances_ for tree in model.estimators_], axis= 0)
+    top_sus_words = [words[i] for i in np.argsort(feature_importances)[-10:]] #tje top 10 indicators.
+    for word in top_sus_words:
+        email_text = re.sub(f"({word})", r'<span style="background-colour: #FFD700;">\1<span>', email_text, flags=re.IGNORECASE)
+
+    return email_text
 
 
 #feature extraction func (to match trianing features)
@@ -147,8 +183,15 @@ def index():
         file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
         file.save(file_path)
 
+
+        #extract email txt & auth res
+        email_text, dkim_fail, spf_fail, dmarc_fail = extract_email_text(file_path)
+
+        #extract featres
+        features = extract_features(email_text)
+        ml_prob = model.predict
         #unpack 2 vals 
-        email_text, y_true_label = extract_email_text(file_path)
+        #email_text, y_true_label = extract_email_text(file_path)
 
 
         #feature consistency
