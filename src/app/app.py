@@ -20,6 +20,9 @@ app.secret_key = "secret_key"
 #load the trained model
 with open("rf_model.pkl", "rb") as model_file:
     model = pickle.load(model_file)
+#load vectorizer
+with open("vectorizer.pkl", "rb") as vectorizer_file:
+    vectorizer = pickle.load(vectorizer_file)
 
 ALLOWED_EXTENSIONS = {'eml', 'txt', 'html'}
 
@@ -74,8 +77,10 @@ def extract_email_text(file_path):
     spf_fail = "spf=fail" in auth_res
     dmarc_fail = "dmarc=fail" in auth_res
 
-    return email_body, dkim_fail, spf_fail, dmarc_fail
-#y_true_label # should return exactly 2 vals
+    y_true_label = 1 if dkim_fail or spf_fail or dmarc_fail else 0
+
+    return email_body, y_true_label # should return exactly 2 vals
+
 
 
 def calc_sus_score(ml_prob):
@@ -162,8 +167,8 @@ def index():
     #issue with "clear" btn sometimes !!
     if request.method == "POST":
         if "clear" in request.form:
-            session["y_true"]
-            session["y_pred"]
+            session["y_true"].clear() #might fix clear btn issues
+            session["y_pred"].clear()
             flash("Form cleared. You can upload a new file.", "info")
             return redirect(url_for('index'))
         
@@ -178,18 +183,17 @@ def index():
             return redirect(request.url)
         
         
-
+        #secure file save
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
         file.save(file_path)
 
 
         #extract email txt & auth res
-        email_text, dkim_fail, spf_fail, dmarc_fail = extract_email_text(file_path)
+        email_text, y_true_label = extract_email_text(file_path)
 
         #extract featres
         features = extract_features(email_text)
-        ml_prob = model.predict
         #unpack 2 vals 
         #email_text, y_true_label = extract_email_text(file_path)
 
@@ -210,22 +214,30 @@ def index():
                 features[feature] = 0 
         features = features[expected_features]
 
+    #to handle empty feature instances
         if features.empty:
             flash("Error extracted features are empty", "error")
             return redirect(url_for('index'))
         
-
-        prediction = model.predict(features)[0]
-        prediction_result = "Phishing Email" if prediction == 1 else "Legitimate Email"  
-        print(f"Prediction: {prediction_result}")
+    #predict phishing prob
+        phishing_prob = model.predict_proba(features)[0][1] #the probability of phis hing
+        prediction = 1 if phishing_prob > 0.5 else 0
+        prediction_res = "Phishing Email" if prediction == 1 else "Legitimate Email"
+        print(f"Prediction: {prediction_res}")
         
+        #compute sus score
+        sus_score = round(phishing_prob*100,2)
+
+        #highlihg sus words
+        highlighted_email = highlight_sus_content(email_text, vectorizer, model)
+
         #Add to history here
         history.append({"filename": filename, 
                         "prediction": prediction_result,
                         "date": datetime.now().strftime("%m/%d/%Y")
                         })
         
-
+#fix y_true_label -- update data for session
         session_data["y_true"].append(y_true_label)
         session_data["y_pred"].append(prediction)
         session.modified = True
@@ -235,21 +247,25 @@ def index():
         print(f"Updated y_pred: {session_data['y_pred']}")
 
 
-        #gen confusion matrix only if at least 2 predictions exist
+#ARCHIVE
+        '''  #gen confusion matrix only if at least 2 predictions exist
         if len(session_data["y_true"]) > 1 != len(session_data["y_pred"]):
             flash("Warning y_true and y_pred lengths don't match.", "warning")
             session_data["y_true"].clear()
             session_data["y_pred"].clear()
             return redirect(url_for('index'))
-        
+       
             
         flash(f"Prediction: {prediction_result}", "success") 
         session["last_prediction"] = prediction_result
-
+        '''
         #return redirect(url_for('label_email'))
-        return redirect(url_for('index'))
-    
-    
+
+        #flash messages for UI
+        flash(f"Prediction:{prediction_res} (Suspicion Score:{sus_score}%)","succes")
+        session["last_prediction"] = prediction_res
+                
+        return render_template("index.html", prediction_result=prediction_result, highlighted_email=highlighted_email)
     
 
     return render_template("index.html", prediction_result=session.get("last_prediction"))
