@@ -22,7 +22,13 @@ with open("rf_model.pkl", "rb") as model_file:
     model = pickle.load(model_file)
 #load vectorizer
 with open("vectorizer.pkl", "rb") as vectorizer_file:
-    vectorizer = pickle.load(vectorizer_file)
+    vectorizer = pickle.load(vectorizer_file)#
+
+#load trigram vectorizer
+with open("trigram_vectorizer.pkl", "rb") as trigram_vec_file:
+    trigram_vectorizer = pickle.load(trigram_vec_file)
+
+
 
 ALLOWED_EXTENSIONS = {'eml', 'txt', 'html'}
 
@@ -102,10 +108,15 @@ def calc_sus_score(ml_prob):
 
 #for sus email content to be highlighted for better user interaction.
 def highlight_sus_content(email_text, vectorizer, model):
+    
+    #big issue HERE ! 
     #highlighted words based on importance in ml model
     words = vectorizer.get_feature_names_out()
-    feature_importances = np.mean([tree.feature_importances_ for tree in model.estimators_], axis= 0)
+    
+    #calc feature importance form RF model
+    feature_importances = np.mean([tree.feature_importances_ for tree in model.estimators_], axis=0)
     top_sus_words = [words[i] for i in np.argsort(feature_importances)[-10:]] #tje top 10 indicators.
+    #highlihgt the top sus words.
     for word in top_sus_words:
         email_text = re.sub(f"({word})", r'<span style="background-colour: #FFD700;">\1<span>', email_text, flags=re.IGNORECASE)
 
