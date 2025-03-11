@@ -27,9 +27,10 @@
                 <button type="submit" name="clear">Clear</button>
             </div>
         </form>
-        {% if prediction_result %}
+        {% if prediction_res %}
             <div class="analytics">
-                <h3>Prediction: {{ prediction_result }}</h3>
+                <h3>Prediction: {{ prediction_res }}</h3>
+                <p><strong>Suspicion Score:</strong> {{ sus_score }}%</p>
             </div>
         {% endif %}
     </div>

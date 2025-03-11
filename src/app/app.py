@@ -291,20 +291,24 @@ def index():
         '''
 
     #predict phishing prob
-        phishing_prob = model.predict_proba(features)[0][1] #the probability of phis hing
-        prediction = 1 if phishing_prob > 0.5 else 0
+        prediction = model.predict(features)[0]
+
+        #print probabilities to understand model output
         prediction_res = "Phishing Email" if prediction == 1 else "Legitimate Email"
-        print(f"Prediction: {prediction_res}")
-        
+
         #compute sus score
-        sus_score = round(phishing_prob*100,2)
+        sus_score = 100 if prediction == 1 else 0
+        
+        print(f"Prediction: {prediction_res}")
+        print(f"Suspicion Score: {sus_score}")
+
 
         #highlihg sus words
         highlighted_email = highlight_sus_content(email_text, vectorizer, trigram_vectorizer, model)
 
         #Add to history here
         history.append({"filename": filename, 
-                        "prediction": prediction_result,
+                        "prediction": prediction_res,
                         "date": datetime.now().strftime("%m/%d/%Y")
                         })
         
@@ -327,19 +331,16 @@ def index():
             return redirect(url_for('index'))
        
         ''' 
-        flash(f"Prediction: {prediction_result}", "success") 
-        session["last_prediction"] = prediction_result
-       
-        return redirect(url_for('label_email'))
 
-        #flash messages for UI
-        flash(f"Prediction:{prediction_res} (Suspicion Score:{sus_score}%)","success")
+        #flash prediction msg
+        flash(f"Prediction: {prediction_res}, (Suspicion Score: {sus_score}%)", "success") 
         session["last_prediction"] = prediction_res
-                
-        return render_template("index.html", prediction_result=prediction_result, highlighted_email=highlighted_email)
+       
+
+        return render_template("index.html", prediction_res=prediction_res, highlighted_email=highlighted_email)
     
 
-    return render_template("index.html", prediction_result=session.get("last_prediction"))
+    return render_template("index.html", prediction_res=session.get("last_prediction"))
 
 #route for history
 @app.route("/history")
