@@ -33,6 +33,13 @@
                 <p><strong>Suspicion Score:</strong> {{ sus_score }}%</p>
             </div>
         {% endif %}
+        {% if highlighted_email %}
+            <div class="email-preview">
+                <h3>Highlighted Email Content</h3>
+                <p>{{ highlighted_email | safe }}</p>
+            </div>
+        {% endif %}
+    </div>
     </div>
 
     

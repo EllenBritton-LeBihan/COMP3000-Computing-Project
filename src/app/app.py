@@ -256,20 +256,7 @@ def index():
         features = extract_features(email_text)
         print(f"Extracted Features:", features.shape)
 
-
-        #validate compatibility, replaces "expected_features"
-        if features.shape[1] != model.n_features_in_:
-            flash("Features mismatch error! Model expects different input features.")
-            return redirect(url_for('index'))
-        
-        
-
-
-        #unpack 2 vals 
-        #email_text, y_true_label = extract_email_text(file_path)
-
-        '''
-        #feature consistency
+         #feature consistency
         expected_features = ["avg_sentence_length", "avg_word_length", "punctuation_count",
                                  "exclamation_count", "question_count", "uppercase_ration",
                                  "readability_score", "bigram_count", "trigram_count", "num_urls", "num_shortened_urls",
@@ -277,30 +264,43 @@ def index():
                                 ]
         
         
+        '''#validate compatibility, replaces "expected_features"
+        if features.shape[1] != model.n_features_in_:
+            flash("Features mismatch error! Model expects different input features.")
+            return redirect(url_for('index'))
+        
+        print("Extracted Features:", features)
+'''
 
+        #unpack 2 vals 
+        #email_text, y_true_label = extract_email_text(file_path)
+       
+    
         #extract features predict us
         for feature in expected_features:
             if feature not in features.columns:
                 features[feature] = 0 
         features = features[expected_features]
 
+
     #to handle empty feature instances
         if features.empty:
             flash("Error extracted features are empty", "error")
             return redirect(url_for('index'))
-        '''
 
-    #predict phishing prob
+    #predict phishing
         prediction = model.predict(features)[0]
 
-        #print probabilities to understand model output
-        prediction_res = "Phishing Email" if prediction == 1 else "Legitimate Email"
-
+        #predict probabilities of phishing
+        probabilities = model.predict_proba(features)[0]  
+        phishing_prob = probabilities[1]
+    
         #compute sus score
-        sus_score = 100 if prediction == 1 else 0
+        sus_score = int(phishing_prob *100) # cvrts prob to a percentage
         
+        prediction_res = "Phishing Email" if prediction == 1 else "Legitimate Email"
         print(f"Prediction: {prediction_res}")
-        print(f"Suspicion Score: {sus_score}")
+        print(f"Suspicion Score: {sus_score}%")
 
 
         #highlihg sus words
@@ -313,8 +313,8 @@ def index():
                         })
         
 #fix y_true_label -- update data for session
-        session_data["y_true"].append(y_true_label)
-        session_data["y_pred"].append(prediction)
+        session["y_true"].append(y_true_label)
+        session["y_pred"].append(prediction)
         session.modified = True
         #debig
         print(f"y_true_label: {y_true_label}") 
@@ -322,15 +322,14 @@ def index():
         print(f"Updated y_pred: {session_data['y_pred']}")
 
 
-#ARCHIVE
-        '''  #gen confusion matrix only if at least 2 predictions exist
+
+        #ceck that y_true and y_pred match ok
         if len(session_data["y_true"]) > 1 != len(session_data["y_pred"]):
             flash("Warning y_true and y_pred lengths don't match.", "warning")
             session_data["y_true"].clear()
             session_data["y_pred"].clear()
             return redirect(url_for('index'))
        
-        ''' 
 
         #flash prediction msg
         flash(f"Prediction: {prediction_res}, (Suspicion Score: {sus_score}%)", "success") 
