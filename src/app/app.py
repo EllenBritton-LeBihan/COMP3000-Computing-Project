@@ -326,11 +326,11 @@ def index():
             session_data["y_pred"].clear()
             return redirect(url_for('index'))
        
-            
+        ''' 
         flash(f"Prediction: {prediction_result}", "success") 
         session["last_prediction"] = prediction_result
-        '''
-        #return redirect(url_for('label_email'))
+       
+        return redirect(url_for('label_email'))
 
         #flash messages for UI
         flash(f"Prediction:{prediction_res} (Suspicion Score:{sus_score}%)","success")
