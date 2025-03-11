@@ -107,7 +107,7 @@ def calc_sus_score(ml_prob):
     return score, severity
 
 #for sus email content to be highlighted for better user interaction.
-def highlight_sus_content(email_text, vectorizer, trigram_vectorizer, model):
+'''def highlight_sus_content(email_text, vectorizer, trigram_vectorizer, model):
     
     #get feature names from both vects
     bigram_words= vectorizer.get_feature_names_out()
@@ -126,7 +126,7 @@ def highlight_sus_content(email_text, vectorizer, trigram_vectorizer, model):
 
 
 
-    '''#highlighted words based on importance in ml model
+    #highlighted words based on importance in ml model
     words = vectorizer.get_feature_names_out()
     
     #calc feature importance form RF model
@@ -135,9 +135,9 @@ def highlight_sus_content(email_text, vectorizer, trigram_vectorizer, model):
     #highlihgt the top sus words.
     for word in top_sus_words:
         email_text = re.sub(f"({word})", r'<span style="background-colour: #FFD700;">\1<span>', email_text, flags=re.IGNORECASE)
-    '''
+    
     return email_text
-
+'''
 
 #feature extraction func (to match trianing features)
 def extract_features(text):
@@ -198,7 +198,24 @@ def extract_features(text):
         trigram_features
     ])
 
-    return combined_features
+    #define olumn names for DF
+    feature_columns = [
+        'avg_sentence_length', 'avg_word_length', 'punctuation_count', 'exclamation_count', 'question_count',
+        'uppercase_ratio', 'bigram_count', 'trigram_count', 'num_urls', 'avg_url_length', 'imperative_word_count',
+        'politeness_word_count', 'num_special_chars', 'readability_score', 'num_shortened_urls'
+    ]
+
+    #append bi/trigram column names
+    bigram_columns = [f'bigram_{i+1}' for i in range(bigram_features.shape[1])]
+    trigram_columns = [f'trigram_{i+1}' for i in range(trigram_features.shape[1])]
+
+    #merge
+    all_columns = feature_columns + bigram_columns + trigram_columns
+
+    #convert to DF
+    feature_df = pd.DataFrame(combined_features, columns=all_columns)
+
+    return feature_df
 
 
     ''' REMOVE
@@ -253,8 +270,17 @@ def index():
         email_text, y_true_label = extract_email_text(file_path)
 
         #extract featres using both of the vectorizers
-        features = extract_features(email_text)
-        print(f"Extracted Features:", features.shape)
+        features_df = extract_features(email_text)
+
+        #checks for if features_df is a DF 
+        if not isinstance(features_df, pd.DataFrame):
+            flash("Error: Features extraction returned invalid format.", "error")
+            return redirect(url_for('index'))
+        #check if correct shape
+        print(f"Expected features shape: {features_df.shape}")
+        #features_df = features_df.values #cnvrt to 2d numpy array.
+    
+    
 
          #feature consistency
         expected_features = ["avg_sentence_length", "avg_word_length", "punctuation_count",
@@ -278,33 +304,36 @@ def index():
     
         #extract features predict us
         for feature in expected_features:
-            if feature not in features.columns:
-                features[feature] = 0 
-        features = features[expected_features]
+            if feature not in features_df.columns:
+                features_df[feature] = 0 
+
+        feature_df = features_df[expected_features]
 
 
     #to handle empty feature instances
-        if features.empty:
+        if features_df.empty:
             flash("Error extracted features are empty", "error")
             return redirect(url_for('index'))
 
     #predict phishing
-        prediction = model.predict(features)[0]
+        prediction = model.predict(feature_df)[0]
 
         #predict probabilities of phishing
-        probabilities = model.predict_proba(features)[0]  
+        probabilities = model.predict_proba(feature_df)[0]  
         phishing_prob = probabilities[1]
     
         #compute sus score
         sus_score = int(phishing_prob *100) # cvrts prob to a percentage
         
         prediction_res = "Phishing Email" if prediction == 1 else "Legitimate Email"
+        #debug
+        print(f"Prediction result (scalar): {prediction}")
         print(f"Prediction: {prediction_res}")
         print(f"Suspicion Score: {sus_score}%")
 
 
         #highlihg sus words
-        highlighted_email = highlight_sus_content(email_text, vectorizer, trigram_vectorizer, model)
+        #highlighted_email = highlight_sus_content(email_text, vectorizer, trigram_vectorizer, model)
 
         #Add to history here
         history.append({"filename": filename, 
@@ -313,21 +342,26 @@ def index():
                         })
         
 #fix y_true_label -- update data for session
-        session["y_true"].append(y_true_label)
-        session["y_pred"].append(prediction)
+        session["y_true"].append(int(y_true_label)) #to int to fix TypeError
+        session["y_pred"].append(int(prediction))
         session.modified = True
+
+        #debug
+        print(f"Session y_true: {session['y_true']}")
+        print(f"Session y_pred: {session['y_pred']}")
         #debig
         print(f"y_true_label: {y_true_label}") 
-        print(f"Updated y_true: {session_data['y_true']}")
-        print(f"Updated y_pred: {session_data['y_pred']}")
+        print(f"Updated y_true: {session['y_true']}")
+        print(f"Updated y_pred: {session['y_pred']}")
 
 
 
         #ceck that y_true and y_pred match ok
-        if len(session_data["y_true"]) > 1 != len(session_data["y_pred"]):
+        #Maybe problem here since returns bool.Review this.
+        if len(session["y_true"]) != len(session["y_pred"]):
             flash("Warning y_true and y_pred lengths don't match.", "warning")
-            session_data["y_true"].clear()
-            session_data["y_pred"].clear()
+            session["y_true"].clear()
+            session["y_pred"].clear()
             return redirect(url_for('index'))
        
 
@@ -336,7 +370,7 @@ def index():
         session["last_prediction"] = prediction_res
        
 
-        return render_template("index.html", prediction_res=prediction_res, highlighted_email=highlighted_email)
+        return render_template("index.html", prediction_res=prediction_res)
     
 
     return render_template("index.html", prediction_res=session.get("last_prediction"))
