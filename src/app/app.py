@@ -107,10 +107,26 @@ def calc_sus_score(ml_prob):
     return score, severity
 
 #for sus email content to be highlighted for better user interaction.
-def highlight_sus_content(email_text, vectorizer, model):
+def highlight_sus_content(email_text, vectorizer, trigram_vectorizer, model):
     
-    #big issue HERE ! 
-    #highlighted words based on importance in ml model
+    #get feature names from both vects
+    bigram_words= vectorizer.get_feature_names_out()
+    trigram_words = trigram_vectorizer.get_feature_names_out()
+
+    all_words = np.concatenate([bigram_words, trigram_words]) #merge feature names
+
+    #compute the feature importance from rf
+    feature_importances = np.mean([tree.feature_importances_ for tree in model.estimators_], axis=0)
+
+    #get top 10 sus words
+    top_sus_words = [all_words[i] for i in np.argsort(feature_importances)[-10]]
+    #highlight top sus words in email text
+    for word in top_sus_words:
+        email_text = re.sub(f"({word})", r'<span style="background-color: #FFD700;">\1</span>', email_text, flags=re.IGNORECASE)
+
+
+
+    '''#highlighted words based on importance in ml model
     words = vectorizer.get_feature_names_out()
     
     #calc feature importance form RF model
@@ -119,7 +135,7 @@ def highlight_sus_content(email_text, vectorizer, model):
     #highlihgt the top sus words.
     for word in top_sus_words:
         email_text = re.sub(f"({word})", r'<span style="background-colour: #FFD700;">\1<span>', email_text, flags=re.IGNORECASE)
-
+    '''
     return email_text
 
 
@@ -129,10 +145,11 @@ def extract_features(text):
     avg_url_lngth = sum(len(url) for url in re.findall(r"https?://\S+", text)) / num_urls if num_urls > 0 else 0
     #calc total lngth of all urls ensure div by 0 doesnt happen. return 0 if no urls found.
     num_special_chars = len(re.findall(r"[!@#$%^&*()_+={}\[\]:;\"'<>,.?/~`]", text))#count n of special char
+    
+    #bigram trigram count
     bigram_count = len(re.findall(r"\b\w+\s\w+\b", text))  
     trigram_count = len(re.findall(r"\b\w+\s\w+\s\w+\b", text))  
 
-    
     #linguistic/punctuation features
     avg_sentence_length = sum(len(sentence.split()) for sentence in text.split('.')) / (len(text.split('.')) + 1) if len(text.split('.')) > 0 else 0 
     #for each sentence n of words counted and calc avg. div by n of sentences.
@@ -154,7 +171,37 @@ def extract_features(text):
     readability_score = textstat.flesch_reading_ease(text)
     num_shortened_urls = len(re.findall(r"https?://(?:bit\.ly|t\.co|goo\.gl)/\S+", text))
 
-    #return 
+    #convert txt features to vectors with bigram/trigram vectorizers.
+    bigram_features = vectorizer.transform([text]).toarray()
+    trigram_features = trigram_vectorizer.transform([text]).toarray()
+
+    #return combined array of features merging linguistic and structual features
+    combined_features = np.hstack([ #stack extracted scalar feat to single array.
+        np.array([[avg_sentence_length, #avg sentence length (words)
+                   avg_word_length, #avg word lengths (char)
+                   punctuation_count, #total punctuation marks (text)
+                   exclamation_count, #n of !
+                   question_count,  #n of  ?
+                   uppercase_ratio, #ratio of uppercase letters to total chars
+                   bigram_count, #count of bigrams in txt
+                   trigram_count, #count of trigrams in txt
+                   num_urls, #n of urls in text
+                   avg_url_lngth, #avg lngth of urls found in txt
+                   imperative_word_count, #count of command-like words
+                   politeness_word_count, #count of polite words 
+                   num_special_chars, #count of special chars 
+                   readability_score, #computed readability score of text
+                   num_shortened_urls]]),  #count of shortened urls 
+
+        #appeneded vectorized bigram/trigram features
+        bigram_features,
+        trigram_features
+    ])
+
+    return combined_features
+
+
+    ''' REMOVE
     return pd.DataFrame([[avg_sentence_length, avg_word_length, punctuation_count,
                           exclamation_count, question_count, uppercase_ratio,
                           bigram_count, trigram_count, num_urls, avg_url_lngth,
@@ -162,9 +209,11 @@ def extract_features(text):
                           readability_score, num_shortened_urls]],
                         columns=["avg_sentence_length", "avg_word_length", "punctuation_count",
                                  "exclamation_count", "question_count", "uppercase_ration",
-                                 "readability_score", "bigram_count", "trigram_count", "num_urls", "num_shortened_urls",
-                                 "avg_url_lngth", "imperative_word_count", "politeness_word_count", "num_special_chars",
+                                 "readability_score", "bigram_count", "trigram_count", "num_urls", 
+                                 "num_shortened_urls", "avg_url_lngth", "imperative_word_count", 
+                                 "politeness_word_count", "num_special_chars",
                                 ])
+'''
 
 
 #route
@@ -203,12 +252,23 @@ def index():
         #extract email txt & auth res
         email_text, y_true_label = extract_email_text(file_path)
 
-        #extract featres
+        #extract featres using both of the vectorizers
         features = extract_features(email_text)
+        print(f"Extracted Features:", features.shape)
+
+
+        #validate compatibility, replaces "expected_features"
+        if features.shape[1] != model.n_features_in_:
+            flash("Features mismatch error! Model expects different input features.")
+            return redirect(url_for('index'))
+        
+        
+
+
         #unpack 2 vals 
         #email_text, y_true_label = extract_email_text(file_path)
 
-
+        '''
         #feature consistency
         expected_features = ["avg_sentence_length", "avg_word_length", "punctuation_count",
                                  "exclamation_count", "question_count", "uppercase_ration",
@@ -216,8 +276,7 @@ def index():
                                  "avg_url_lngth", "imperative_word_count", "politeness_word_count", "num_special_chars",
                                 ]
         
-        features = extract_features(email_text)
-        print(f"Extracted Features:", features.shape)
+        
 
         #extract features predict us
         for feature in expected_features:
@@ -229,7 +288,8 @@ def index():
         if features.empty:
             flash("Error extracted features are empty", "error")
             return redirect(url_for('index'))
-        
+        '''
+
     #predict phishing prob
         phishing_prob = model.predict_proba(features)[0][1] #the probability of phis hing
         prediction = 1 if phishing_prob > 0.5 else 0
@@ -240,7 +300,7 @@ def index():
         sus_score = round(phishing_prob*100,2)
 
         #highlihg sus words
-        highlighted_email = highlight_sus_content(email_text, vectorizer, model)
+        highlighted_email = highlight_sus_content(email_text, vectorizer, trigram_vectorizer, model)
 
         #Add to history here
         history.append({"filename": filename, 
@@ -273,7 +333,7 @@ def index():
         #return redirect(url_for('label_email'))
 
         #flash messages for UI
-        flash(f"Prediction:{prediction_res} (Suspicion Score:{sus_score}%)","succes")
+        flash(f"Prediction:{prediction_res} (Suspicion Score:{sus_score}%)","success")
         session["last_prediction"] = prediction_res
                 
         return render_template("index.html", prediction_result=prediction_result, highlighted_email=highlighted_email)
