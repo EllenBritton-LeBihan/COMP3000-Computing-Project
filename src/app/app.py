@@ -25,8 +25,8 @@ with open("vectorizer.pkl", "rb") as vectorizer_file:
     vectorizer = pickle.load(vectorizer_file)#
 
 #load trigram vectorizer
-with open("trigram_vectorizer.pkl", "rb") as trigram_vec_file:
-    trigram_vectorizer = pickle.load(trigram_vec_file)
+#with open("trigram_vectorizer.pkl", "rb") as trigram_vec_file:
+    #trigram_vectorizer = pickle.load(trigram_vec_file)
 
 
 
@@ -173,7 +173,7 @@ def extract_features(text):
 
     #convert txt features to vectors with bigram/trigram vectorizers.
     bigram_features = vectorizer.transform([text]).toarray()
-    trigram_features = trigram_vectorizer.transform([text]).toarray()
+    #trigram_features = trigram_vectorizer.transform([text]).toarray()
 
     #return combined array of features merging linguistic and structual features
     combined_features = np.hstack([ #stack extracted scalar feat to single array.
@@ -184,7 +184,7 @@ def extract_features(text):
                    question_count,  #n of  ?
                    uppercase_ratio, #ratio of uppercase letters to total chars
                    bigram_count, #count of bigrams in txt
-                   trigram_count, #count of trigrams in txt
+                   #trigram_count, #count of trigrams in txt
                    num_urls, #n of urls in text
                    avg_url_lngth, #avg lngth of urls found in txt
                    imperative_word_count, #count of command-like words
@@ -195,22 +195,22 @@ def extract_features(text):
 
         #appeneded vectorized bigram/trigram features
         bigram_features,
-        trigram_features
+        #trigram_features
     ])
 
     #define olumn names for DF
     feature_columns = [
         'avg_sentence_length', 'avg_word_length', 'punctuation_count', 'exclamation_count', 'question_count',
-        'uppercase_ratio', 'bigram_count', 'trigram_count', 'num_urls', 'avg_url_length', 'imperative_word_count',
+        'uppercase_ratio', 'bigram_count', 'num_urls', 'avg_url_length', 'imperative_word_count',
         'politeness_word_count', 'num_special_chars', 'readability_score', 'num_shortened_urls'
     ]
 
     #append bi/trigram column names
     bigram_columns = [f'bigram_{i+1}' for i in range(bigram_features.shape[1])]
-    trigram_columns = [f'trigram_{i+1}' for i in range(trigram_features.shape[1])]
+    #trigram_columns = [f'trigram_{i+1}' for i in range(trigram_features.shape[1])]
 
     #merge
-    all_columns = feature_columns + bigram_columns + trigram_columns
+    all_columns = feature_columns + bigram_columns 
 
     #convert to DF
     feature_df = pd.DataFrame(combined_features, columns=all_columns)
@@ -285,7 +285,7 @@ def index():
          #feature consistency
         expected_features = ["avg_sentence_length", "avg_word_length", "punctuation_count",
                                  "exclamation_count", "question_count", "uppercase_ration",
-                                 "readability_score", "bigram_count", "trigram_count", "num_urls", "num_shortened_urls",
+                                 "readability_score", "bigram_count",  "num_urls", "num_shortened_urls",
                                  "avg_url_lngth", "imperative_word_count", "politeness_word_count", "num_special_chars",
                                 ]
         
@@ -366,14 +366,14 @@ def index():
        
 
         #flash prediction msg
-        flash(f"Prediction: {prediction_res}, (Suspicion Score: {sus_score}%)", "success") 
+        flash(f"Prediction: {prediction_res}, (Suspicion Score: {sus_score})", "success") 
         session["last_prediction"] = prediction_res
-       
+        session["last_sus_score"] = sus_score
 
-        return render_template("index.html", prediction_res=prediction_res)
+        return render_template("index.html", prediction_res=prediction_res, sus_score=sus_score)
     
 
-    return render_template("index.html", prediction_res=session.get("last_prediction"))
+    return render_template("index.html", prediction_res=session.get("last_prediction"), sus_score=session.get("sus_score"))
 
 #route for history
 @app.route("/history")
