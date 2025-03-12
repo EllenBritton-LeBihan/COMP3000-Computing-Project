@@ -1,3 +1,4 @@
+#archived test was for first iterations of project, no longer relevant -- to be deleted.
 import sqlite3
 
 conn = sqlite3.connect('emails.db')

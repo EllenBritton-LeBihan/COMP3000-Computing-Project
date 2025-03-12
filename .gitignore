@@ -4,6 +4,7 @@
 *.odt
 *.ods
 *.tmp
+*.txt
 #large files
 src/data/*.csv
 

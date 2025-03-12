@@ -1,3 +1,5 @@
+
+#archived test was for first iterations of project, no longer relevant -- to be deleted.
 import unittest
 from other.email_templates import (
     family_friends_template_labelled,
