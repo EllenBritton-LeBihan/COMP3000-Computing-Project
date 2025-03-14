@@ -195,7 +195,7 @@ def extract_features(text):
 
         #appeneded vectorized bigram/trigram features
         bigram_features,
-        #trigram_features
+    #   trigram_features
     ])
 
     #define olumn names for DF
