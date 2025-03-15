@@ -3,52 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <title>PhishNet Email Phishing Detection Tool</title>
-    
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
 <body>
-    <div class="sidebar">
-        <h2>PhishNet</h2>
-        <ul>
-            <li><a href="{{ url_for('index') }}" class="nav-link">Dashboard</a></li>
-            <li><a href="{{ url_for('history_page') }}" class="nav-link">History</a></li>
-        </ul>
-    </div>
     <div class="container">
-        <h1>PhishNet Email Phishing Detection Tool</h1>
-        <form action="/" method="post" enctype="multipart/form-data">
-            <div class="upload-box" id="drop-area"> <!-- for drag and drop func-->
-                <p>Drag and drop or click "Choose Files"</p>
-                <input type="file" name="file" id="file-input">
+        <header>
+            <div class="logo-title">
+                <img src="{{ url_for('static', filename='imgs/logo.png') }}" alt="PhishNet Logo" class="logo">
+                <h1 class="title">PhishNet</h1>
             </div>
-            <div class="buttons">
-                <button type="submit">Upload & Predict</button>
-                <button type="submit" name="clear">Clear</button>
+            <div class="nav-buttons">
+                <ul>
+                    <li><a href="{{ url_for('index') }}" class="nav-button">Dashboard</a></li>
+                    <li><a href="{{ url_for('history_page') }}" class="nav-button">History</a></li>
+                </ul>
             </div>
-        </form>
-        {% if prediction_res %}
-            <div class="analytics">
-                <h3>Prediction: {{ prediction_res }}</h3>
-                <p><strong>Suspicion Score:</strong> {{ sus_score }}%</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <h2 class="subtitle">Email phishing checker – email upload</h2>
+                <form action="/" method="post" enctype="multipart/form-data" class="upload-form">
+                    <div class="upload-box" id="drop-area">
+                        <input type="file" name="file" id="file-input" hidden>
+                        <label for="file-input" class="upload-label">Choose Files ▼</label>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="check-button">Check</button>
+                        <button type="submit" name="clear" class="clear-button">Clear</button>
+                    </div>
+                </form>
             </div>
-        {% endif %}
-        {% if highlighted_email %}
-            <div class="email-preview">
-                <h3>Highlighted Email Content</h3>
-                <p>{{ highlighted_email | safe }}</p>
+            <div class="results-section"></div>
+                {% if prediction_res %}
+                    <div class="result-container">
+                        <div class="prediction-box">
+                            <span class="prediction-label">Prediction:</span>
+                            <span class="prediction-value">{{ prediction_res }}</span>
+                        </div>
+                        <div class="score-box">
+                            <span class="score-label">Suspicion Score:</span>
+                            <span class="score-value">{{ sus_score }}%</span>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
-        {% endif %}
-    </div>
+            <div class="highlighted-email">
+                {% if highlighted_email %}
+                    <div class="email-preview">
+                        <p>{{ highlighted_email | safe }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </main>
     </div>
 
-    
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             let dropArea = document.getElementById("drop-area");
             let fileInput = document.getElementById("file-input");
 
-            //stop any default drag in behaviours
             ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
                 dropArea.addEventListener(eventName, preventDefaults, false);
             });
@@ -58,24 +74,13 @@
                 e.stopPropagation();
             }
 
-            //highlight on drg
-            ["dragenter", "dragover"].forEach(eventName => {
-                dropArea.addEventListener(eventName, () => dropArea.classList.add("highlight"), false);
-            });
-
-            ["dragleave", "drop"].forEach(eventName => {
-                dropArea.addEventListener(eventName, () => dropArea.classList.remove("highlight"), false);
-            });
-
-            //for handling dropped fles
             dropArea.addEventListener("drop", function (e) {
                 let dt = e.dataTransfer;
                 let files = dt.files;
-                fileInput.files = files; //assign to input
+                fileInput.files = files;
             });
         });
     </script>
 </body>
 </html>
-
 <!--Generated with Duality Figma Plugin and modified to fit with updated changes in app.py --> 

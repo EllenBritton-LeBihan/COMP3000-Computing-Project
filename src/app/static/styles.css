@@ -1,98 +1,218 @@
-
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(to right, #233d4d, #a1c4fd);
-  color: #3735d1ff;
+  background-color: #E9FBFF;
   margin: 0;
   padding: 0;
-  display: flex;
-}
-.sidebar {
-  width: 250px;
-  background: linear-gradient(
-    180deg,
-    #a9cdcaff 0%,
-    #1b1942d9 99%,
-    #8da6a6ff 100%
-  );
-  padding: 20px;
-  height: 100vh;
-}
-.container {
-  flex: 1;
-  padding: 20px;
-}
-.upload-box {
-  border: 2px dashed #000000;
-  padding: 20px;
-  text-align: center;
-  width: 60%;
-  margin: auto;
-}
-.buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-.analytics {
-  background: rgba(8, 100, 133, 0.11);
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  width: 40%;
-  margin: auto;
-}
-
-/*Generated with Duality Figma Plugin 
-
-
-
-
--------history.html-------- 
-*/
-body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(200.36deg,  #cdfdf9ff 0%, #567072a3 87%);
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  color: #222;
 }
 
 .container {
-  width: 80%;
-  margin: 40px auto;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0px;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 200px;
+  margin-right: 0px;
 }
 
 .title {
-  color: #2a1cc9;
-  font-size: 32px;
-  text-align: left;
-  margin-bottom: 20px;
+  color: #201B98;
+  font-size: 35px;
+  font-weight: bold;
 }
 
+.nav-buttons ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+.nav-buttons li {
+  display: inline-block;
+  gap: 30px;
+}
+
+.nav-button {
+  text-decoration: none; 
+  background: #E0F0FF;
+  color: #E4917E;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 12px;
+  border-bottom: 1px solid #000000;
+  border-top: 1px solid #000000;
+  border-right: 1px solid #000000;
+  border-left: 1px solid #000000;
+  font-weight: medium;
+}
+
+.nav-button:hover {
+  background: #494865;
+}
+
+
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #E7F3FE;
+  border-bottom: 1px solid #FFAA97;
+  border-top: 1px solid #FFAA97;
+}
+.subtitle {
+  text-align: left;
+  font-size: 18px;
+  color: #003366;
+}
+
+.upload-form {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1px;
+}
+
+.upload-box {
+  border: 1.5px dashed #000000;
+  padding: 20px;
+  text-align: center;
+  width: 89%;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+.upload-label {
+  font-size: 16px;
+  color: #cc7a5a;
+  font-weight: bold;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.check-button, .clear-button {
+  background: #E0F0FF;
+  color: #E4917E;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 12px;
+  border-bottom: 1px solid #000000;
+  border-top: 1px solid #000000;
+  border-right: 1px solid #000000;
+  border-left: 1px solid #000000;
+  font-weight: medium;
+}
+
+.clear-button:hover {
+  background: #494865;
+}
+
+.check-button:hover {
+  background: #494865;
+}
+
+
+.result-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #FFB07F;
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 12px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.prediction-box, .score-box {
+  font-size: 18px;
+  font-weight: bold;
+  background: rgb(73, 72, 101, 0.7); 
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  flex: 1; 
+  min-width: 150px;
+}
+
+.prediction-box {
+  margin-right: 20px;
+}
+
+.score-box {
+  margin-left: 20px;
+}
+
+.prediction-box, .score-box {
+  font-size: 16px;
+  font-weight: medium;
+}
+
+.email-preview {
+  background: #666;
+  color: white;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+
+
+
+
+/*history*/
 .history-table {
   width: 100%;
+  margin: 20px auto;
   border-collapse: collapse;
+  text-align: left;
+  border-radius: 12px;
 }
 
 .history-table th, .history-table td {
   padding: 12px;
-  text-align: left;
+  border-bottom: 1px solid #FFB07F;
 }
 
 .history-table th {
-  color: #2a1cc9;
+  background-color: #494865;
+  color: #FFB07F;
 }
 
-.history-table tr {
-  border-bottom: 1px solid #ddd;
+.history-table td {
+  background-color: #E0F0FF;
 }
 
 .score-bar {
-  width: 50px;
-  height: 20px;
-  background-color: navy;
-  border-radius: 8px;
+  background-color: #E0F0FF;
+  height: 10px;
+  width: 100px;
+  border-radius: 5px;
 }
 
 .prediction {
@@ -100,11 +220,11 @@ body {
 }
 
 .prediction.phishing {
-  color: crimson;
+  color: rgb(255, 0, 89);
 }
 
 .prediction.legitimate {
-  color: lightseagreen;
+  color: rgb(0, 121, 130);
 }
 
-/* Generated with Duality Figma Plugin */
+/* Generated with Duality Figma Plugin and modified to fit with updated changes in app.py. 
