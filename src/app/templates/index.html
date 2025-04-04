@@ -40,11 +40,15 @@
             </div>
             <div class="results-section"></div>
                 {% if prediction_res %}
-                    <div class="result-container">
+                    <div class="phish-container">
                         <div class="prediction-box">
                             <span class="prediction-label">Prediction:</span>
                             <span class="prediction-value">{{ prediction_res }}</span>
                         </div>
+
+                    </div>
+
+                    <div class="scorebox-container">
                         <div class="score-box">
                             <span class="score-label">Suspicion Score:</span>
                             <span class="score-value">{{ sus_score }}%</span>

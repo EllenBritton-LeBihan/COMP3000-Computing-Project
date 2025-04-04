@@ -179,21 +179,27 @@ header {
 }
 
 
-.result-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #FFB07F;
-  padding: 15px;
-  margin-top: 20px;
-  border-radius: 12px;
-  width: calc(100% - 40px);
+.phish-container {
+  width: 100%;
   max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  margin-top: 0px;
+  border-radius: 10px;
+  
+  color: #FFB07F;
+ 
 }
 
-.prediction-box, .score-box {
+
+.scorebox-container {
+
+}
+
+.prediction-box {
   font-size: 18px;
   font-weight: bold;
   background: rgb(73, 72, 101, 0.7); 
@@ -207,18 +213,20 @@ header {
   margin: 0;
 }
 
+
 .prediction-box {
   margin: 0;
+  font-size: 20px;
+  font-weight: medium;
 }
 
 .score-box {
   margin-left: 20px;
+  font-size: 16px;
+  font-weight: medium
 }
 
-.prediction-box, .score-box {
-  font-size: 16px;
-  font-weight: medium;
-}
+
 
 .email-preview {
   background: #666;
