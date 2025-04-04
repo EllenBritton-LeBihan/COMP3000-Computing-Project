@@ -14,6 +14,9 @@ body {
 }
 
 header {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -87,25 +90,27 @@ header {
 
 
 .upload-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  border-radius: 12px;
+  width: 100%; 
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 15px 20px; 
+  border-radius: 10px;
   background-color: #E0F0FF;
   border-bottom: 1px solid #FFAA97;
   border-top: 1px solid #FFAA97;
-  margin-top: 50px;
 }
 .subtitle {
   text-align: left;
   font-size: 18px;
   color: #003366;
+  margin-bottom: 10px;
 }
 
 .upload-form {
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 15px 20px; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -113,12 +118,16 @@ header {
 }
 
 .upload-box {
+  width: 100%;
   border: 1.5px dashed #000000;
-  padding: 20px;
+  padding: 15px 20px; 
+  max-width: 1200px;
+  margin: 0 auto;
   text-align: center;
-  width: 89%;
+  width: calc(100% - 40px);
   cursor: pointer;
-  border-radius: 12px;
+  border-radius: 10px;
+  margin-bottom: 20px
 }
 
 .upload-label {
@@ -129,30 +138,33 @@ header {
 
 .button-group {
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
+  width: 100%;
   margin-top: 10px;
+  padding: 0 10px;
 }
 
 .check-button, .clear-button {
   background: #E0F0FF;
   color: #E4917E;
-  border: none;
+  border: 1px solid black;
   padding: 10px 15px;
   cursor: pointer;
-  border-radius: 12px;
-  border-bottom: 1px solid #000000;
-  border-top: 1px solid #000000;
-  border-right: 1px solid #000000;
-  border-left: 1px solid #000000;
+  border-radius: 10px;
   font-weight: medium;
+  cursor: pointer;
+  transition: 0.3s;
+  width: 45%;
 }
 
 .clear-button:hover {
   background: #494865;
+  color: white;
 }
 
 .check-button:hover {
   background: #494865;
+  color: white;
 }
 
 
