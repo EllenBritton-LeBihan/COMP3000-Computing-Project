@@ -59,25 +59,11 @@ def extract_email_text(file_path):
         else:
             email_body= msg.get_payload(decode=True).decode(errors="ignore")
     
-    ##need to return the auth failures and make it a feature in the model.
-    ''' #extract auth 
-    dkim_pass = False
-    spf_pass = False
-    dmarc_pass = False'''
-
+   
     headers = dict(msg.items()) #to dict
     auth_res = headers.get("authentication-Results", "").lower()
 
-    '''#check res
-    if "dkim=pass" in auth_res:
-            dkim_pass = True
-    if "spf=pass" in auth_res:
-        spf_pass = True
-    if "dmarc=pass" in auth_res:
-        dmarc_pass = True   
-
-    y_true_label = 0 if dkim_pass and spf_pass and dmarc_pass else 1
-'''
+    
 
     dkim_fail = "dkim=fail" in auth_res
     spf_fail = "spf=fail" in auth_res
