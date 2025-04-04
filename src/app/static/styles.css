@@ -61,10 +61,12 @@ header {
   gap: 20px;
   margin: 0;
   padding: 0;
+  letter-spacing: 3px;
 }
 .nav-buttons li {
   display: inline-block;
   gap: 30px;
+  letter-spacing: 3px;
 }
 
 .nav-button {
@@ -101,9 +103,11 @@ header {
 }
 .subtitle {
   text-align: left;
-  font-size: 18px;
-  color: #003366;
+  font-size: 20px;
+  color: #201B98;
   margin-bottom: 10px;
+  font-weight: lighter;
+  letter-spacing: 3px;
 }
 
 .upload-form {
@@ -119,7 +123,8 @@ header {
 
 .upload-box {
   width: 100%;
-  border: 1.5px dashed #000000;
+  min-height: 50px;
+  border: 1.8px dashed #000000;
   padding: 15px 20px; 
   max-width: 1200px;
   margin: 0 auto;
@@ -131,30 +136,36 @@ header {
 }
 
 .upload-label {
-  font-size: 16px;
-  color: #cc7a5a;
-  font-weight: bold;
+  font-size: 24px;
+  color: #201B98;
+  display: block;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 3px;
+  font-weight: medium;
 }
 
 .button-group {
   display: flex;
   justify-content: space-between;
+  max-width: 1200px;
   width: 100%;
-  margin-top: 10px;
-  padding: 0 10px;
+  margin-top: 10px auto 0;
+  padding: 0 20px;
 }
 
 .check-button, .clear-button {
   background: #E0F0FF;
+  font-size: 18px;
   color: #E4917E;
   border: 1px solid black;
-  padding: 10px 15px;
+  padding: 10px 20px;
   cursor: pointer;
   border-radius: 10px;
   font-weight: medium;
   cursor: pointer;
   transition: 0.3s;
-  width: 45%;
+  width: auto;
 }
 
 .clear-button:hover {
@@ -170,13 +181,14 @@ header {
 
 .result-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   color: #FFB07F;
   padding: 15px;
   margin-top: 20px;
   border-radius: 12px;
-  width: 90%;
+  width: calc(100% - 40px);
+  max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -188,12 +200,15 @@ header {
   padding: 15px;
   border-radius: 10px;
   text-align: center;
-  flex: 1; 
+  flex-grow: 1;
+  width: 100%;
   min-width: 150px;
+  min-width: unset;
+  margin: 0;
 }
 
 .prediction-box {
-  margin-right: 20px;
+  margin: 0;
 }
 
 .score-box {
