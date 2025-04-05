@@ -39,23 +39,54 @@
                 </form>
             </div>
             <div class="results-section"></div>
+            <!--displays prediction for phishing-->
                 {% if prediction_res %}
                     <div class="phish-container">
                         <div class="prediction-box">
                             <span class="prediction-label">Prediction:</span>
                             <span class="prediction-value">{{ prediction_res }}</span>
                         </div>
-
                     </div>
 
+                    <!--displays suspicion score based on a percentage.-->
                     <div class="scorebox-container">
                         <div class="score-box">
+                            <!-- adding a gauge (arc)-->
+                             <arc class="dial-gauge" viewBox="0 0 100 50">
+                                <!-- arc background-->
+                                 <path d="M 10 40 A 40 40 0 1 1 90 40" stroke="#ccc" stroke-width="5" fill="none"/>
+
+                                <!--needle of guage-->
+                                <line id="needle" x1="50" y1="40" x2="50" y2="10" stroke="black" stroke-width="3" transform="rotate(0,50,40)" />
+                             </arc>
+
                             <span class="score-label">Suspicion Score:</span>
                             <span class="score-value">{{ sus_score }}%</span>
                         </div>
                     </div>
                 {% endif %}
             </div>
+
+            <script>
+                //cnvrt sus score (0 - 100) into a rotation angle
+                // at 0% Needle at -90 deg (Leftmost)
+                // at 50% needle at 0 deg (mid)
+                // at 100% needle at 90 deg (rightmost)
+                function updateGauge(score) {
+                    let angle = -90 + (score*1.8); // maps the 0-100 to -90deg to +90deg
+                    //apply computed rotation angle to needle
+                    document.getElementById("needle").setAttribute("transform", `rotate(${angle},50,40)`);
+                    //update text in guage to display current score.
+                    document.getElementById("score-text").innerText = score + "%";
+                }
+                
+                //replaces sus_score with actual value
+                let susScore = parseInt("{{sus_score}}") || 0; //default to 0
+                updateGauge(susScore);
+            
+            
+            
+            </script>
             <div class="highlighted-email">
                 {% if highlighted_email %}
                     <div class="email-preview">

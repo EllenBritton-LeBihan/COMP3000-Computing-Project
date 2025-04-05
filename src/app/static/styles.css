@@ -189,9 +189,31 @@ header {
   padding: 15px 20px;
   margin-top: 0px;
   border-radius: 10px;
+  letter-spacing: 3px;
+  color: #22FFC4;
   
-  color: #FFB07F;
- 
+}
+
+.gauge-container {
+  position: relative;
+  width: 200px;
+  height: 120px;
+  background: #4a4a63;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+}
+
+/* Center score text */
+.score-text {
+  position: absolute;
+  bottom: 10px;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
 }
 
 
@@ -200,9 +222,7 @@ header {
 }
 
 .prediction-box {
-  font-size: 18px;
-  font-weight: bold;
-  background: rgb(73, 72, 101, 0.7); 
+  background: #494865; 
   padding: 15px;
   border-radius: 10px;
   text-align: center;
@@ -216,8 +236,8 @@ header {
 
 .prediction-box {
   margin: 0;
-  font-size: 20px;
-  font-weight: medium;
+  font-size: 23px;
+  font-weight: bold;
 }
 
 .score-box {
