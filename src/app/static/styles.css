@@ -28,6 +28,7 @@ header {
   border-top: 1px solid #FFAA97;
   margin-bottom: 20px;
   height: 80px;
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
 }
 
 
@@ -39,19 +40,19 @@ header {
 }
 
 .logo {
-  height: 100px;
+  height: 150px;
   margin-right: 0px;
 }
 
 .title1 {
   color: #0900FF;
-  font-size: 35px;
+  font-size: 45px;
   font-weight: 100;
 }
 
 .title2 {
   color: #201B98;
-  font-size: 35px;
+  font-size: 45px;
   font-weight: lighter;
 }
 
@@ -83,11 +84,13 @@ header {
   border-left: 1px solid #000000;
   font-weight: medium;
   white-space: nowrap;
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
 }
 
 .nav-button:hover {
   background: #494865;
-  color: white;
+  color: #22FFC4;
+  box-shadow: 3px 3px 6px #22FFC4;
 }
 
 
@@ -100,13 +103,15 @@ header {
   background-color: #E0F0FF;
   border-bottom: 1px solid #FFAA97;
   border-top: 1px solid #FFAA97;
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
 }
 .subtitle {
   text-align: left;
-  font-size: 20px;
+  font-size: 22px;
   color: #201B98;
   margin-bottom: 10px;
   font-weight: lighter;
+  text-shadow: 2px 2px 5px rgba(202, 202, 202, 0.3);
   letter-spacing: 3px;
 }
 
@@ -119,6 +124,7 @@ header {
   flex-direction: column;
   align-items: center;
   margin-top: 1px;
+  
 }
 
 .upload-box {
@@ -132,17 +138,23 @@ header {
   width: calc(100% - 40px);
   cursor: pointer;
   border-radius: 10px;
-  margin-bottom: 20px
+  margin-bottom: 20px;
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
 }
 
 .upload-label {
-  font-size: 24px;
+  font-size: 26px;
   color: #201B98;
   display: block;
   width: 100%;
+  min-height: 50px;
+  max-width: 1200px;
+  margin: 0 auto;
   text-align: center;
+  width: calc(100% - 40px);
   letter-spacing: 3px;
   font-weight: medium;
+  text-shadow: 2px 2px 5px rgba(34, 34, 34, 0.3);
 }
 
 .button-group {
@@ -166,16 +178,19 @@ header {
   cursor: pointer;
   transition: 0.3s;
   width: auto;
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
 }
 
 .clear-button:hover {
   background: #494865;
-  color: white;
+  color: #22FFC4;
+  box-shadow: 3px 3px 6px #22FFC4;
 }
 
 .check-button:hover {
   background: #494865;
-  color: white;
+  color: #22FFC4;
+  box-shadow: 3px 3px 6px #22FFC4;
 }
 
 
@@ -216,14 +231,8 @@ header {
   margin: 0;
   font-size: 23px;
   font-weight: bold;
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
 }
-
-.score-box {
-  margin-left: 20px;
-  font-size: 16px;
-  font-weight: medium
-}
-
 
 
 .email-preview {
@@ -287,8 +296,8 @@ header {
 /*sus score dial */
 .guage-container {
   position: relative;
-  width: 200px;
-  height: 120px;
+  width: 260px;
+  height: 220px;
   background: linear-gradient(#545873, #6B7290);
   border-radius: 12px;
   display: flex;
@@ -300,12 +309,16 @@ header {
 /* score txt*/
 .score-txt {
   position: absolute;
-  bottom: 10px;
-  font-size: 22px;
+  bottom: 5px;
+  font-size: 30px;
   font-weight: bold;
   color: white;
   text-align: center;
-  margin-top: 8px
 }
 
+/* dial guage */
+.dial-gauge {
+  width: 100%;
+  height: auto;
+}
 /* Generated with Duality Figma Plugin and heavily modified to fit with updated changes in app.py and added features.. 
