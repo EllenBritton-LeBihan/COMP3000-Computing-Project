@@ -18,7 +18,7 @@
             </div>
             <div class="nav-buttons">
                 <ul>
-                    <li><a href="{{ url_for('index') }}" class="nav-button">Dashboard</a></li>
+                    <li><a href="{{ url_for('index') }}" class="nav-button">Checker</a></li>
                     <li><a href="{{ url_for('history_page') }}" class="nav-button">History</a></li>
                 </ul>
             </div>
@@ -75,6 +75,33 @@
 
             </div>
 
+
+            <!-- sus level legend-->
+             <div class="suspicion-legend">
+                <div class="legend-item"><span class="dot green"></span>Low suspicion: 0 - 40%</div>
+                <div class="legend-item"><span class="dot yellow"></span>Medium suspicion: 40 - 70%</div>
+                <div class="legend-item"><span class="dot red"></span>High suspicion: 70 - 100%</div>
+                <button class="flagged-btn">View what was flagged <span class="expand-icon">⤢</span></button>
+            </div>
+
+            <!-- sus box breakdown-->
+            <div class="suspicion-breakdown-box">
+                <p>This email has a {{ sus_score if sus_score is not none else "0" }}% suspicion score, here’s why.</p>
+                <ul>
+                    {% if reason_auth %}
+                    <li><strong>Email Authentication Issues:</strong> {{ reason_auth }}</li>
+                    {% endif %}
+                    {% if reason_sender %}
+                    <li><strong>Suspicious Sender:</strong> {{ reason_sender }}</li>
+                    {% endif %}
+                    {% if reason_language %}
+                    <li><strong>Unusual Language/Tone:</strong> {{ reason_language }}</li>
+                    {% endif %}
+                    {% if reason_attachments %}
+                    <li><strong>Suspicious Attachments:</strong> {{ reason_language }}</li>
+                    {% endif %}
+                </ul>
+            </div>
             <script>
                 //cnvrt sus score (0 - 100) into a rotation angle
                 // at 0% Needle at -90 deg (Leftmost)
@@ -105,6 +132,7 @@
         </main>
     </div>
 
+    <!-- for upload seciton-->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             let dropArea = document.getElementById("drop-area");
