@@ -285,5 +285,27 @@ header {
 
 
 /*sus score dial */
-#
-/* Generated with Duality Figma Plugin and modified to fit with updated changes in app.py. 
+.guage-container {
+  position: relative;
+  width: 200px;
+  height: 120px;
+  background: linear-gradient(#545873, #6B7290);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+}
+
+/* score txt*/
+.score-txt {
+  position: absolute;
+  bottom: 10px;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  margin-top: 8px
+}
+
+/* Generated with Duality Figma Plugin and heavily modified to fit with updated changes in app.py and added features.. 

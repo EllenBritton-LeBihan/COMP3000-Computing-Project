@@ -42,7 +42,6 @@
 
             <div class="results-section"></div>
             <!--displays prediction for phishing-->
-                {% if prediction_res %}
                     <div class="phish-container">
                         <div class="prediction-box">
                             <span class="prediction-label">Prediction:</span>
@@ -56,10 +55,9 @@
                     <div class="scorebox-container">
                         <div class="guage-container">
                             <!-- adding a gauge (arc)-->
-                             <arc class="dial-gauge" viewBox="0 0 100 50">
-                                <!-- arc background-->
-                                 <path d="M 10 40 A 40 40 0 1 1 90 40" stroke="#ccc" stroke-width="5" fill="none"/>
-                                
+                             <svg class="dial-gauge" viewBox="0 0 100 50">
+                                <!-- rem background-->
+
                                  <!-- colour segments-->
                                  <path d="M 10 50 A 40 40 0 0 1 40 10" fill="none" stroke="green" stroke-width="8"/> <!-- 0 - 40% -->
                                  <path d="M 40 10 A 40 40 0 0 1 60 10" fill="none" stroke="yellow" stroke-width="8"/> <!-- 40 - 70% -->
@@ -67,15 +65,14 @@
                      
                                 <!--needle of guage-->
                                 <line id="needle" x1="50" y1="50" x2="50" y2="20" stroke="black" stroke-width="4" stroke-linecap="round" transform="rotate(-90,50,50)" />
-                             </arc>
+                             </svg>
                              <!-- txt for score-->
                               <div class ="score-txt">
-                                <span class="score-value">{{ sus_score }}%</span>
+                                <span class="score-value" style="margin-top: 8px;">{{ sus_score }}%</span>
                               </div>
                         </div>
                     </div>
-                    
-                {% endif %}
+
             </div>
 
             <script>
@@ -88,7 +85,7 @@
                     //apply computed rotation angle to needle
                     document.getElementById("needle").setAttribute("transform", `rotate(${angle},50,40)`);
                     //update text in guage to display current score.
-                    document.getElementById("score-text").innerText = score + "%";
+                    document.getElementById("score-txt").innerText = score + "%";
                 }
                 
                 //replaces sus_score with actual value
