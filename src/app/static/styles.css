@@ -1,5 +1,5 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #EFF7FF;
   margin: 0;
   padding: 0;
@@ -211,7 +211,15 @@ header {
 
 
 .scorebox-container {
-
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 30px auto 0;
+  padding: 0 20px;
+  flex-wrap: nowrap; 
 }
 
 .prediction-box {
@@ -243,6 +251,111 @@ header {
   border-radius: 5px;
   width: 100%;
 }
+
+
+
+
+
+
+/*sus score dial */
+.guage-container {
+  position: relative;
+  width: 260px;
+  height: 220px;
+  background: linear-gradient(#545873, #6B7290);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+}
+
+/* score txt*/
+.score-txt {
+  position: absolute;
+  bottom: 5px;
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+}
+
+/* dial guage */
+.dial-gauge {
+  width: 100%;
+  height: auto;
+}
+
+
+
+/*Legend*/
+.suspicion-legend {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 33.5px;
+  box-shadow: 0px 3px 5px rgba(0,0,0,0.2);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+}
+
+.dot {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.green { background-color: green; }
+.yellow { background-color: yellow; }
+.red { background-color: red; }
+
+.flagged-btn {
+  background-color: #63637e;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0px 3px 5px rgba(0,0,0,0.2);
+}
+
+.expand-icon {
+  font-size: 14px;
+  transform: scale(1.1);
+}
+
+
+/*Sus reason container*/
+.suspicion-breakdown-box {
+  width: 100%;
+  max-width: 1000px;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0px 3px 5px rgba(0,0,0,0.2);
+}
+
+
+
+
+
 
 
 
@@ -290,115 +403,6 @@ header {
   color: rgb(0, 121, 130);
 }
 
-
-
-
-/*sus score dial */
-.guage-container {
-  position: relative;
-  width: 260px;
-  height: 220px;
-  background: linear-gradient(#545873, #6B7290);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
-}
-
-/* score txt*/
-.score-txt {
-  position: absolute;
-  bottom: 5px;
-  font-size: 30px;
-  font-weight: bold;
-  color: white;
-  text-align: center;
-}
-
-/* dial guage */
-.dial-gauge {
-  width: 100%;
-  height: auto;
-}
-
-
-
-/*Legend*/
-.suspicion-legend {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #f2f8ff;
-  border-radius: 12px;
-  padding: 12px 20px;
-  margin: 20px auto;
-  width: 90%;
-  max-width: 700px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  flex-wrap: wrap;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  font-size: 15px;
-  margin-right: 20px;
-  margin-bottom: 10px;
-}
-
-.dot {
-  height: 12px;
-  width: 12px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 8px;
-}
-
-.green { background-color: green; }
-.yellow { background-color: yellow; }
-.red { background-color: red; }
-
-.flagged-btn {
-  background-color: #63637e;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 8px 16px;
-  font-size: 15px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: 0px 3px 5px rgba(0,0,0,0.2);
-}
-
-.expand-icon {
-  font-size: 14px;
-  transform: scale(1.1);
-}
-
-.suspicion-breakdown-box {
-  background: linear-gradient(145deg, #63637e, #4e4e65);
-  color: white;
-  border-radius: 15px;
-  padding: 20px;
-  margin: 20px auto;
-  width: 90%;
-  max-width: 700px;
-  font-size: 16px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-.suspicion-breakdown-box ul {
-  padding-left: 20px;
-  margin-top: 10px;
-}
-
-.suspicion-breakdown-box li {
-  margin-bottom: 10px;
-  list-style-type: disc;
-}
 
 
 /* Generated with Duality Figma Plugin and heavily modified to fit with updated changes in app.py and added features.. 
