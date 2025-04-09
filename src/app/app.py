@@ -45,6 +45,8 @@ history = []
 #ARCHIVED store predictions history for confusion matrix -- not using a conf matrix anymore.
 session_data = {"y_true": [], "y_pred": []}
 
+
+
 #func to extract email text from .eml files
 def extract_email_text(file_path):
     with open(file_path, "rb") as f:
@@ -351,15 +353,60 @@ def index():
             return redirect(url_for('index'))
        
 
+        # ------- Authentication reasoning logic --------- 
+        #evaluate ground truth label for phishing classification
+        #if y_true_label == 1, sample is a confirmed phishing email
+        #assign static reason to for failure of email auth protocols.
+        reason_auth = ""
+        #reason_sender = ""
+        reason_language = ""
+        reason_attachments = ""
+        #reason_subject = ""
+
+        if y_true_label == 1: #y_true_label = 1 when one of the three auth fails.
+            #Authentication failure, failure suggests spoofed or untrusted origns.
+            reason_auth = "The email failed SPF/DKIM/DMARC authentication checks."
+        
+        #---Language based risk---
+        #>0.5       :High risk
+        #0.4 - 0.5  :Moderate risj
+        #<0.4       :low risk
+
+        if phishing_prob > 0.5:
+            #higher probability
+            reason_language = "High urgency detected in the language, suggesting a potential phishing attempt."
+        
+        elif 0.4 <= phishing_prob <= 0.5:
+            reason_language = "Moderate urgency and suspicious language patterns detected."
+        
+        else:
+            reason_language = "Low levels of urgency in the language, but some suspicious cues still present."
+
+        #---Attachment based risk
+        #lowercased normalisation for better matching
+        if any(ext in filename.lower() for ext in ['.ext', 'scr', ',bat']):
+            reason_attachments = "The email contains potentially dangerous attachemnets."
+
         #flash prediction msg
         flash(f"Prediction: {prediction_res}, (Suspicion Score: {sus_score})", "success") 
         session["last_prediction"] = prediction_res
         session["last_sus_score"] = sus_score
 
-        return render_template("index.html", prediction_res=prediction_res, sus_score=sus_score)
+        #POST return
+        return render_template("index.html", 
+                               prediction_res=prediction_res, 
+                               sus_score=sus_score,
+                               reason_auth=reason_auth,
+                               reason_language=reason_language,
+                               reason_attachments = reason_attachments)
     
-
-    return render_template("index.html", prediction_res=session.get("last_prediction"), sus_score=session.get("sus_score"))
+    #GET retunr
+    return render_template("index.html", 
+                           prediction_res=session.get("last_prediction"), 
+                           sus_score=session.get("last_sus_score"),
+                           reason_auth=session.get("last_reason_auth"),
+                           reason_language=session.get("last_reason_language"),
+                           reason_attachments=session.get("last_reason_attachments"))
 
 #route for history
 @app.route("/history")

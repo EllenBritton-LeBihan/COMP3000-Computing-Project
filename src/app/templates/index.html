@@ -86,20 +86,45 @@
 
             <!-- sus box breakdown-->
             <div class="suspicion-breakdown-box">
-                <p>This email has a {{ sus_score if sus_score is not none else "0" }}% suspicion score, here’s why.</p>
-                <ul>
+                <!-- title-->
+                <h3 class="breakdown-title">Why was this email flagged?</h3>
+                <p class="breakdown-score">Suspicion Score: <strong>{{ sus_score if sus_score is not none else "0" }}%</strong></p>
+                <ul class="reason-list">
                     {% if reason_auth %}
-                    <li><strong>Email Authentication Issues:</strong> {{ reason_auth }}</li>
+                    <li class="reason-item">
+                        <span class="reason-icon">✔️</span>
+                        <strong>Email Authentication Issue:</strong> {{ reason_auth }}
+                    </li>
                     {% endif %}
+                    <!--
                     {% if reason_sender %}
-                    <li><strong>Suspicious Sender:</strong> {{ reason_sender }}</li>
+                    <li class="reason-item">
+                        <span class="reason-icon"></span>
+                        <strong>Suspicious Sender:</strong> {{ reason_sender }}
+                    </li>
                     {% endif %}
+                    -->
+
                     {% if reason_language %}
-                    <li><strong>Unusual Language/Tone:</strong> {{ reason_language }}</li>
+                    <li class="reason-item">
+                        <span class="reason-icon">💭</span>
+                        <strong>Language/Tone:</strong> {{ reason_language }}
+                    </li>
                     {% endif %}
+
+                    <!-- Triggered when high-risk file types detected-->
                     {% if reason_attachments %}
-                    <li><strong>Suspicious Attachments:</strong> {{ reason_language }}</li>
+                    <li class="reason-item">
+                        <span class="reason-icon">📎</span>
+                        <strong>Suspicious Attachment:</strong> {{ reason_attachments }}
+                    </li>
                     {% endif %}
+                    <!--{% if reason_subject %}
+                    <li class="reason-item">
+                        <strong>Subject Line:</strong> {{ reason_subject }}
+                    </li>
+                    {% endif %}
+                -->
                 </ul>
             </div>
             <script>
@@ -156,4 +181,5 @@
     </script>
 </body>
 </html>
-<!--Generated with Duality Figma Plugin and modified to fit with updated changes in app.py --> 
+
+<!-- Generated with Duality Figma Plugin and heavily modified to fit with updated changes in app.py and added features.. -->

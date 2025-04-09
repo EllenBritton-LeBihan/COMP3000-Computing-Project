@@ -324,6 +324,81 @@ header {
 
 
 
+/*Legend*/
+.suspicion-legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f2f8ff;
+  border-radius: 12px;
+  padding: 12px 20px;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 700px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  margin-right: 20px;
+  margin-bottom: 10px;
+}
+
+.dot {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.green { background-color: green; }
+.yellow { background-color: yellow; }
+.red { background-color: red; }
+
+.flagged-btn {
+  background-color: #63637e;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0px 3px 5px rgba(0,0,0,0.2);
+}
+
+.expand-icon {
+  font-size: 14px;
+  transform: scale(1.1);
+}
+
+.suspicion-breakdown-box {
+  background: linear-gradient(145deg, #63637e, #4e4e65);
+  color: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 700px;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.suspicion-breakdown-box ul {
+  padding-left: 20px;
+  margin-top: 10px;
+}
+
+.suspicion-breakdown-box li {
+  margin-bottom: 10px;
+  list-style-type: disc;
+}
 
 
 /* Generated with Duality Figma Plugin and heavily modified to fit with updated changes in app.py and added features.. 
