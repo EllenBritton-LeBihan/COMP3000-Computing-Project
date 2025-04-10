@@ -73,57 +73,59 @@
                                 </div>
                             </div>
                             <!-- sus level legend-->
-                            <div class="suspicion-legend">
-                                <div class="legend-item"><span class="dot green"></span>Low suspicion: 0 - 40%</div>
-                                <div class="legend-item"><span class="dot yellow"></span>Medium suspicion: 40 - 70%</div>
-                                <div class="legend-item"><span class="dot red"></span>High suspicion: 70 - 100%</div>
-                                <button class="flagged-btn">View what was flagged <span class="expand-icon">⤢</span></button>
-                            </div>
+                            <div class="right-box-column">
+                                <div class="suspicion-legend">
+                                    <div class="legend-item"><span class="dot green"></span>Low suspicion: 0 - 40%</div>
+                                    <div class="legend-item"><span class="dot yellow"></span>Medium suspicion: 40 - 70%</div>
+                                    <div class="legend-item"><span class="dot red"></span>High suspicion: 70 - 100%</div>
+                                    <button class="flagged-btn">View what was flagged <span class="expand-icon">⤢</span></button>
+                                </div>
 
 
 
-                             <!-- sus box breakdown-->
-                            <div class="suspicion-breakdown-box">
-                                <!-- title-->
-                                <h3 class="breakdown-title">Why was this email flagged?</h3>
-                                <p class="breakdown-score">Suspicion Score: <strong>{{ sus_score if sus_score is not none else "0" }}%</strong></p>
-                                <ul class="reason-list">
-                                    {% if reason_auth %}
-                                    <li class="reason-item">
-                                        <span class="reason-icon">✔️</span>
-                                        <strong>Email Authentication Issue:</strong> {{ reason_auth }}
-                                    </li>
-                                    {% endif %}
-                                    <!--
-                                    {% if reason_sender %}
-                                    <li class="reason-item">
-                                        <span class="reason-icon"></span>
-                                        <strong>Suspicious Sender:</strong> {{ reason_sender }}
-                                    </li>
-                                    {% endif %}
+                                <!-- sus box breakdown-->
+                                <div class="suspicion-breakdown-box">
+                                    <!-- title-->
+                                    <h3 class="breakdown-title">Why was this email flagged?</h3>
+                                    <p class="breakdown-score">Suspicion Score: <strong>{{ sus_score if sus_score is not none else "0" }}%</strong></p>
+                                    <ul class="reason-list">
+                                        {% if reason_auth %}
+                                        <li class="reason-item">
+                                            <span class="reason-icon">✔️</span>
+                                            <strong>Email Authentication Issue:</strong> {{ reason_auth }}
+                                        </li>
+                                        {% endif %}
+                                        <!--
+                                        {% if reason_sender %}
+                                        <li class="reason-item">
+                                            <span class="reason-icon"></span>
+                                            <strong>Suspicious Sender:</strong> {{ reason_sender }}
+                                        </li>
+                                        {% endif %}
+                                        -->
+
+                                        {% if reason_language %}
+                                        <li class="reason-item">
+                                            <span class="reason-icon">💭</span>
+                                            <strong>Language/Tone:</strong> {{ reason_language }}
+                                        </li>
+                                        {% endif %}
+
+                                        <!-- Triggered when high-risk file types detected-->
+                                        {% if reason_attachments %}
+                                        <li class="reason-item">
+                                            <span class="reason-icon">📎</span>
+                                            <strong>Suspicious Attachment:</strong> {{ reason_attachments }}
+                                        </li>
+                                        {% endif %}
+                                        <!--{% if reason_subject %}
+                                        <li class="reason-item">
+                                            <strong>Subject Line:</strong> {{ reason_subject }}
+                                        </li>
+                                        {% endif %}
                                     -->
-
-                                    {% if reason_language %}
-                                    <li class="reason-item">
-                                        <span class="reason-icon">💭</span>
-                                        <strong>Language/Tone:</strong> {{ reason_language }}
-                                    </li>
-                                    {% endif %}
-
-                                    <!-- Triggered when high-risk file types detected-->
-                                    {% if reason_attachments %}
-                                    <li class="reason-item">
-                                        <span class="reason-icon">📎</span>
-                                        <strong>Suspicious Attachment:</strong> {{ reason_attachments }}
-                                    </li>
-                                    {% endif %}
-                                    <!--{% if reason_subject %}
-                                    <li class="reason-item">
-                                        <strong>Subject Line:</strong> {{ reason_subject }}
-                                    </li>
-                                    {% endif %}
-                                -->
-                                </ul>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
