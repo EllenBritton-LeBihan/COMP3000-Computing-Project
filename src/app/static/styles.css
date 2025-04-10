@@ -254,9 +254,19 @@ header {
 
 
 
-
-
-
+.scorebox-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 30px auto 0;
+  padding: 0 20px;
+  flex-wrap: nowrap; 
+  width: 100%;
+  box-sizing: border-box;
+}
 /*sus score dial */
 .guage-container {
   position: relative;
@@ -268,6 +278,8 @@ header {
   align-items: center;
   justify-content: center;
   box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+  flex: 1;
+  max-width: 320px;
 }
 
 /* score txt*/
@@ -297,8 +309,10 @@ header {
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
-  gap: 33.5px;
+  gap: 30px;
   box-shadow: 0px 3px 5px rgba(0,0,0,0.2);
+  flex: 1;
+  max-width: 400px;
 }
 
 .legend-item {
@@ -320,7 +334,7 @@ header {
 .red { background-color: red; }
 
 .flagged-btn {
-  background-color: #63637e;
+  background: linear-gradient(#545873, #6B7290);
   color: white;
   border: none;
   border-radius: 10px;
@@ -342,14 +356,17 @@ header {
 /*Sus reason container*/
 .suspicion-breakdown-box {
   width: 100%;
-  max-width: 1000px;
   border-radius: 12px;
   padding: 16px 20px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   box-shadow: 0px 3px 5px rgba(0,0,0,0.2);
+  background: linear-gradient(#545873, #6B7290);
+  color: white;
+  flex: 1;
+  max-width: 300px;
 }
 
 

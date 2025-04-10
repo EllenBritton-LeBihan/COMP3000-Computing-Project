@@ -52,81 +52,87 @@
 
 
                     <!--displays suspicion score based on a percentage.-->
-                    <div class="scorebox-container">
-                        <div class="guage-container">
-                            <!-- adding a gauge (arc)-->
-                             <svg class="dial-gauge" viewBox="0 0 100 50">
-                                <!-- rem background-->
+                    <div class="scorebox-wrapper">
+                        <div class="scorebox-container">
+                            <div class="guage-container">
+                                <!-- adding a gauge (arc)-->
+                                <svg class="dial-gauge" viewBox="0 0 100 50">
+                                    <!-- rem background-->
 
-                                 <!-- colour segments-->
-                                 <path d="M 10 50 A 40 40 0 0 1 40 10" fill="none" stroke="green" stroke-width="8"/> <!-- 0 - 40% -->
-                                 <path d="M 40 10 A 40 40 0 0 1 60 10" fill="none" stroke="yellow" stroke-width="8"/> <!-- 40 - 70% -->
-                                 <path d="M 60 10 A 40 40 0 0 1 90 50" fill="none" stroke="red" stroke-width="8"/> <!-- 70 - 100% -->
+                                    <!-- colour segments-->
+                                    <path d="M 10 50 A 40 40 0 0 1 40 10" fill="none" stroke="green" stroke-width="8"/> <!-- 0 - 40% -->
+                                    <path d="M 40 10 A 40 40 0 0 1 60 10" fill="none" stroke="yellow" stroke-width="8"/> <!-- 40 - 70% -->
+                                    <path d="M 60 10 A 40 40 0 0 1 90 50" fill="none" stroke="red" stroke-width="8"/> <!-- 70 - 100% -->
                      
-                                <!--needle of guage-->
-                                <line id="needle" x1="50" y1="50" x2="50" y2="20" stroke="black" stroke-width="4" stroke-linecap="round" transform="rotate(-90,50,50)" />
-                             </svg>
-                             <!-- txt for score-->
-                              <div class ="score-txt">
-                                <span class="score-value" style="margin-top: 8px;">{{ sus_score }}%</span>
-                              </div>
+                                    <!--needle of guage-->
+                                    <line id="needle" x1="50" y1="50" x2="50" y2="20" stroke="black" stroke-width="4" stroke-linecap="round" transform="rotate(-90,50,50)" />
+                                </svg>
+                                <!-- txt for score-->
+                                <div class ="score-txt">
+                                    <span class="score-value" style="margin-top: 8px;">{{ sus_score }}%</span>
+                                </div>
+                            </div>
+                            <!-- sus level legend-->
+                            <div class="suspicion-legend">
+                                <div class="legend-item"><span class="dot green"></span>Low suspicion: 0 - 40%</div>
+                                <div class="legend-item"><span class="dot yellow"></span>Medium suspicion: 40 - 70%</div>
+                                <div class="legend-item"><span class="dot red"></span>High suspicion: 70 - 100%</div>
+                                <button class="flagged-btn">View what was flagged <span class="expand-icon">⤢</span></button>
+                            </div>
+
+
+
+                             <!-- sus box breakdown-->
+                            <div class="suspicion-breakdown-box">
+                                <!-- title-->
+                                <h3 class="breakdown-title">Why was this email flagged?</h3>
+                                <p class="breakdown-score">Suspicion Score: <strong>{{ sus_score if sus_score is not none else "0" }}%</strong></p>
+                                <ul class="reason-list">
+                                    {% if reason_auth %}
+                                    <li class="reason-item">
+                                        <span class="reason-icon">✔️</span>
+                                        <strong>Email Authentication Issue:</strong> {{ reason_auth }}
+                                    </li>
+                                    {% endif %}
+                                    <!--
+                                    {% if reason_sender %}
+                                    <li class="reason-item">
+                                        <span class="reason-icon"></span>
+                                        <strong>Suspicious Sender:</strong> {{ reason_sender }}
+                                    </li>
+                                    {% endif %}
+                                    -->
+
+                                    {% if reason_language %}
+                                    <li class="reason-item">
+                                        <span class="reason-icon">💭</span>
+                                        <strong>Language/Tone:</strong> {{ reason_language }}
+                                    </li>
+                                    {% endif %}
+
+                                    <!-- Triggered when high-risk file types detected-->
+                                    {% if reason_attachments %}
+                                    <li class="reason-item">
+                                        <span class="reason-icon">📎</span>
+                                        <strong>Suspicious Attachment:</strong> {{ reason_attachments }}
+                                    </li>
+                                    {% endif %}
+                                    <!--{% if reason_subject %}
+                                    <li class="reason-item">
+                                        <strong>Subject Line:</strong> {{ reason_subject }}
+                                    </li>
+                                    {% endif %}
+                                -->
+                                </ul>
+                            </div>
                         </div>
-                          <!-- sus level legend-->
-                        <div class="suspicion-legend">
-                            <div class="legend-item"><span class="dot green"></span>Low suspicion: 0 - 40%</div>
-                            <div class="legend-item"><span class="dot yellow"></span>Medium suspicion: 40 - 70%</div>
-                            <div class="legend-item"><span class="dot red"></span>High suspicion: 70 - 100%</div>
-                            <button class="flagged-btn">View what was flagged <span class="expand-icon">⤢</span></button>
                         </div>
-                    </div>
             </div>
 
 
             
 
-            <!-- sus box breakdown-->
-            <div class="suspicion-breakdown-box">
-                <!-- title-->
-                <h3 class="breakdown-title">Why was this email flagged?</h3>
-                <p class="breakdown-score">Suspicion Score: <strong>{{ sus_score if sus_score is not none else "0" }}%</strong></p>
-                <ul class="reason-list">
-                    {% if reason_auth %}
-                    <li class="reason-item">
-                        <span class="reason-icon">✔️</span>
-                        <strong>Email Authentication Issue:</strong> {{ reason_auth }}
-                    </li>
-                    {% endif %}
-                    <!--
-                    {% if reason_sender %}
-                    <li class="reason-item">
-                        <span class="reason-icon"></span>
-                        <strong>Suspicious Sender:</strong> {{ reason_sender }}
-                    </li>
-                    {% endif %}
-                    -->
-
-                    {% if reason_language %}
-                    <li class="reason-item">
-                        <span class="reason-icon">💭</span>
-                        <strong>Language/Tone:</strong> {{ reason_language }}
-                    </li>
-                    {% endif %}
-
-                    <!-- Triggered when high-risk file types detected-->
-                    {% if reason_attachments %}
-                    <li class="reason-item">
-                        <span class="reason-icon">📎</span>
-                        <strong>Suspicious Attachment:</strong> {{ reason_attachments }}
-                    </li>
-                    {% endif %}
-                    <!--{% if reason_subject %}
-                    <li class="reason-item">
-                        <strong>Subject Line:</strong> {{ reason_subject }}
-                    </li>
-                    {% endif %}
-                -->
-                </ul>
-            </div>
+            
             <script>
                 //cnvrt sus score (0 - 100) into a rotation angle
                 // at 0% Needle at -90 deg (Leftmost)
