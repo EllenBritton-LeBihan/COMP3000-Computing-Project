@@ -65,7 +65,7 @@
                                     <path d="M 60 10 A 40 40 0 0 1 90 50" fill="none" stroke="red" stroke-width="8"/> <!-- 70 - 100% -->
                      
                                     <!--needle of guage-->
-                                    <line id="needle" x1="50" y1="50" x2="50" y2="20" stroke="black" stroke-width="4" stroke-linecap="round" transform="rotate(-90,50,50)" />
+                                    <line id="needle" x1="50" y1="40" x2="50" y2="10" stroke="black" stroke-width="3" transform="rotate(-90, 50, 40)" />
                                 </svg>
                                 <!-- txt for score-->
                                 <div class ="score-txt">
@@ -141,13 +141,15 @@
                 function updateGauge(score) {
                     let angle = -90 + (score*1.8); // maps the 0-100 to -90deg to +90deg
                     //apply computed rotation angle to needle
+                    needle.style.transition = "transform 0.5s ease-in-out";
+                    needle.setAttribute("transform", `rotate(${angle}, 50, 40)`);
                     document.getElementById("needle").setAttribute("transform", `rotate(${angle},50,40)`);
                     //update text in guage to display current score.
-                    document.getElementById("score-txt").innerText = score + "%";
+                    document.querySelector(".score-txt").innerText = score + "%";
                 }
                 
                 //replaces sus_score with actual value
-                let susScore = parseInt("{{sus_score}}") || 0; //default to 0
+                let susScore = parseInt("{{ sus_score | default(0) }}"); //default to 0
                 updateGauge(susScore);
             
             
