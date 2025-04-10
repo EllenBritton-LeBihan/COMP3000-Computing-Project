@@ -210,17 +210,6 @@ header {
 }
 
 
-.scorebox-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 20px;
-  max-width: 1200px;
-  margin: 30px auto 0;
-  padding: 0 20px;
-  flex-wrap: nowrap; 
-}
 
 .prediction-box {
   background: #494865; 
@@ -229,13 +218,7 @@ header {
   text-align: center;
   flex-grow: 1;
   width: 100%;
-  min-width: 150px;
   min-width: unset;
-  margin: 0;
-}
-
-
-.prediction-box {
   margin: 0;
   font-size: 23px;
   font-weight: bold;
@@ -255,23 +238,24 @@ header {
 
 
 .scorebox-wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 20px;
   max-width: 1200px;
-  margin: 30px auto 0;
-  padding: 0 20px;
-  flex-wrap: nowrap; 
-  width: 100%;
+  margin: 0 auto;
+  padding: 15px 20px;
   box-sizing: border-box;
 }
+
+
+.scorebox-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 20px;
+  width: 100%;
+}
+
 /*sus score dial */
 .guage-container {
   position: relative;
-  width: 260px;
-  height: 220px;
   background: linear-gradient(#545873, #6B7290);
   border-radius: 12px;
   display: flex;
@@ -279,7 +263,7 @@ header {
   justify-content: center;
   box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
   flex: 1;
-  max-width: 320px;
+  padding: 20;
 }
 
 /* score txt*/
@@ -302,17 +286,13 @@ header {
 
 /*Legend*/
 .suspicion-legend {
-  width: 100%;
-  max-width: 400px;
-  border-radius: 12px;
-  padding: 16px 20px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  flex: 1;
+  border-radius: 10px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 30px;
   box-shadow: 0px 3px 5px rgba(0,0,0,0.2);
-  flex: 1;
-  max-width: 400px;
 }
 
 .legend-item {
@@ -356,8 +336,6 @@ header {
 /*Sus reason container*/
 .suspicion-breakdown-box {
   width: 100%;
-  border-radius: 12px;
-  padding: 16px 20px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
@@ -365,8 +343,12 @@ header {
   box-shadow: 0px 3px 5px rgba(0,0,0,0.2);
   background: linear-gradient(#545873, #6B7290);
   color: white;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: left;
   flex: 1;
-  max-width: 300px;
+  max-width: 33.333%;
+  margin: 0;
 }
 
 
