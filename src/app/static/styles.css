@@ -276,8 +276,8 @@ header {
 /* score txt*/
 .score-txt {
   position: absolute;
-  bottom: 20px;
-  font-size: 36px;
+  bottom: 50px;
+  font-size: 48px;
   font-weight: bold;
   color: white;
   text-align: center;
