@@ -324,7 +324,8 @@ def index():
         #highlighted_email = highlight_sus_content(email_text, vectorizer, trigram_vectorizer, model)
 
         #Add to history here
-        history.append({"filename": filename, 
+        history.append({"filename": filename,
+                        "sus_score": sus_score,
                         "prediction": prediction_res,
                         "date": datetime.now().strftime("%m/%d/%Y")
                         })
