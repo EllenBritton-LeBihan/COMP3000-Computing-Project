@@ -12,11 +12,13 @@
         <header>
             <div class="logo-title">
                 <img src="{{ url_for('static', filename='imgs/logo.png') }}" alt="PhishNet Logo" class="logo">
-                <h1 class="title">PhishNet</h1>
+                <h1 class="title1">Phish</h1>
+                <h1 class="title2">Net</h1>
+
             </div>
             <div class="nav-buttons">
                 <ul>
-                    <li><a href="{{ url_for('index') }}" class="nav-button">Dashboard</a></li>
+                    <li><a href="{{ url_for('index') }}" class="nav-button">Checker</a></li>
                     <li><a href="{{ url_for('history_page') }}" class="nav-button">History</a></li>
                 </ul>
             </div>
@@ -37,7 +39,7 @@
                 {% for entry in history %}
                 <tr>
                     <td>{{ entry.filename }}</td>
-                    <td class="score-bar"></td>
+                    <td class="score-bar"> {{ entry.sus_score }}% </span></td>
                     <td class="prediction {{ 'phishing' if entry.prediction == 'Phishing' else 'legitimate' }}">
                         {{ entry.prediction }}
                     </td>
