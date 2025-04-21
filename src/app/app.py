@@ -229,11 +229,21 @@ def index():
 
     prediction_result = None  # debugging
 
-    #issue with "clear" btn sometimes !!
+    #fixed issue
     if request.method == "POST":
         if "clear" in request.form:
-            session["y_true"].clear() #might fix clear btn issues
+            #clr prediction history lists from session to reset
+            session["y_true"].clear() #fixed
             session["y_pred"].clear()
+            #rst all last prediction related session vars 
+            session["last_prediction"] = None
+            session["last_sus_score"] =0
+            session["last_uploaded_filename"] = None
+            session["last_reason_auth"] = None
+            session["last_resaon_language"] = None
+            session["last_reason_attachemnets"] = None
+
+            #inform user
             flash("Form cleared. You can upload a new file.", "info")
             return redirect(url_for('index'))
         
@@ -392,6 +402,7 @@ def index():
         flash(f"Prediction: {prediction_res}, (Suspicion Score: {sus_score})", "success") 
         session["last_prediction"] = prediction_res
         session["last_sus_score"] = sus_score
+        session["last_uploaded_filename"] = filename # persistence
 
         #POST return
         return render_template("index.html", 
