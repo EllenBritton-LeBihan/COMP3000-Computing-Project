@@ -173,6 +173,7 @@
             let dropArea = document.getElementById("drop-area");
             let fileInput = document.getElementById("file-input");
             let fileLabel = document.getElementById("file-label"); //for replacement of placeholder on drag and drop
+            let clearButton = document.querySelector('.clear-button');
 
             ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
                 dropArea.addEventListener(eventName, preventDefaults, false);
@@ -200,8 +201,9 @@
                     fileLabel.textContent = "Choose Files ▼";
                 }
             });
-            document.querySelector('.clear-button').addEventListener('click', function () {
-            fileLabel.textContent = "Choose Files ▼";
+            clearButton.addEventListener('click', function (event) {
+                fileInput.value = ''; //to clear file input
+                fileLabel.textContent= "Choose Files ▼";
             });
         });
     </script>
