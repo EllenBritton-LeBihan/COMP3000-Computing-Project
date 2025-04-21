@@ -397,6 +397,7 @@ def index():
         return render_template("index.html", 
                                prediction_res=prediction_res, 
                                sus_score=sus_score,
+                               uploaded_filename=filename, #for stopping form and label reloading on "check"
                                reason_auth=reason_auth,
                                reason_language=reason_language,
                                reason_attachments = reason_attachments)
