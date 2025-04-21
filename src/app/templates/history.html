@@ -39,7 +39,10 @@
                 {% for entry in history %}
                 <tr>
                     <td>{{ entry.filename }}</td>
-                    <td class="score-bar"> {{ entry.sus_score }}% </span></td>
+                    <td class="score-bar {{ 'high' if entry.sus_score >= 80 else 'medium' if entry.sus_score >= 60 else 'low' }}">
+                        {{ entry.sus_score }}%
+                    </td>
+                    
                     <td class="prediction {{ 'phishing' if entry.prediction == 'Phishing' else 'legitimate' }}">
                         {{ entry.prediction }}
                     </td>

@@ -382,7 +382,8 @@ header {
 
 /*history*/
 .container-history {
-  color: #201B98
+  color: #201B98;
+
 }
 .history-table {
   width: 100%;
@@ -417,6 +418,7 @@ header {
 
 .prediction {
   font-weight: bold;
+  font-weight: lighter;
 }
 
 .prediction.phishing {
@@ -428,5 +430,15 @@ header {
 }
 
 
+
+.score-bar.high {
+    color: rgb(255, 0, 89);
+}
+.score-bar.medium {
+    color: orange;
+}
+.score-bar.low {
+    color: rgb(0, 121, 130);
+}
 
 /* Generated with Duality Figma Plugin and heavily modified to fit with updated changes in app.py and added features.. 
