@@ -41,7 +41,25 @@
                 </form>
             </div>
 
+            <script>
 
+                const uploadBox = document.querySelector('.upload-box');
+                //when file dragged over upload area
+                uploadBox.addEventListener('dragover', (e) => {
+                    e.preventDefault(); //prevent default opening of file
+                    uploadBox.classList.add('dragover'); //for css class
+                });
+                
+                //without dropping when dragged file leaves upload space.
+                uploadBox.addEventListener('dragleave', () => {
+                    uploadBox.classList.remove('dragover');
+                });
+                //when file dropped in upload space
+                uploadBox.addEventListener('drop', () => {
+                    uploadBox.classList.remove('dragover');//rm highlight class ocne dropped
+                });
+            </script>
+            
             <div class="results-section"></div>
             <!--displays prediction for phishing-->
                     <div class="phish-container">

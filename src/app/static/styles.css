@@ -143,6 +143,14 @@ header {
   box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
 }
 
+/*for smoother drag and drop*/
+.upload-box.dragover {
+  border-color: #4caf50;
+  background: #f0fff0;
+  box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+}
+
+
 .upload-label {
   font-size: 26px;
   color: #201B98;
