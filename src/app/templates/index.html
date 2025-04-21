@@ -172,7 +172,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             let dropArea = document.getElementById("drop-area");
             let fileInput = document.getElementById("file-input");
-            let fileLabel = document.getElementById("file-label"); //for smoother drag and drop.
+            let fileLabel = document.getElementById("file-label"); //for replacement of placeholder on drag and drop
 
             ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
                 dropArea.addEventListener(eventName, preventDefaults, false);
@@ -187,6 +187,21 @@
                 let dt = e.dataTransfer;
                 let files = dt.files;
                 fileInput.files = files;
+                if (files.length > 0) {
+                    fileLabel.textContent = files[0].name;
+                }
+            });
+
+            fileInput.addEventListener("change", function() {
+                if (fileInput.files.length > 0) {
+                    fileLabel.textContent = fileInput.files[0].name;
+
+                } else {
+                    fileLabel.textContent = "Choose Files ▼";
+                }
+            });
+            document.querySelector('.clear-button').addEventListener('click', function () {
+            fileLabel.textContent = "Choose Files ▼";
             });
         });
     </script>
