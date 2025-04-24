@@ -205,22 +205,6 @@ def extract_features(text):
 
     return feature_df
 
-
-    ''' REMOVE
-    return pd.DataFrame([[avg_sentence_length, avg_word_length, punctuation_count,
-                          exclamation_count, question_count, uppercase_ratio,
-                          bigram_count, trigram_count, num_urls, avg_url_lngth,
-                          imperative_word_count, politeness_word_count, num_special_chars,
-                          readability_score, num_shortened_urls]],
-                        columns=["avg_sentence_length", "avg_word_length", "punctuation_count",
-                                 "exclamation_count", "question_count", "uppercase_ration",
-                                 "readability_score", "bigram_count", "trigram_count", "num_urls", 
-                                 "num_shortened_urls", "avg_url_lngth", "imperative_word_count", 
-                                 "politeness_word_count", "num_special_chars",
-                                ])
-'''
-
-
 #route
 @app.route("/", methods=["GET", "POST"])
 def index():
