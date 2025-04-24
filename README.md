@@ -70,6 +70,3 @@ https://scikit-learn.org/
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#####
-This project uses the [BSD 3-Clause License](https://opensource.org/licenses/BSD-3-Clause).
