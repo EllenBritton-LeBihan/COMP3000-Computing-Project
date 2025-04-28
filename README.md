@@ -104,7 +104,7 @@ Textstat is licensed under the [MIT License](https://opensource.org/licenses/MIT
 #### Phishing Email Dataset
 By Naser Abdullah Alam, available on Kaggle under the CC BY-SA 4.0 license.  
 
-The machine learning model in this project was trained and validated using the publicly available [**Phishing Email Dataset**](https://www.kaggle.com/datasets/alamkhan22/phishing-email-dataset) hosted on Kaggle (Alam, 2024).  
+The machine learning model in this project was trained and validated using the publicly available [**Phishing Email Dataset**](https://www.kaggle.com/datasets/naserabdullahalam/phishing-email-dataset) hosted on Kaggle (Alam, 2024).  
 This dataset is licensed under the **Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)** license.
 > This means it can be used for educational and research purposes, with appropriate credit. Any derivative work must also be shared under the same license, and is restricted to **non-commercial** use.
 
