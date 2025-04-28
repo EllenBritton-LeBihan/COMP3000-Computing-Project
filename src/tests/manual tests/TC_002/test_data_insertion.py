@@ -1,4 +1,4 @@
-#archived test was for first iterations of project, no longer relevant -- to be deleted.
+#archived test was for first iterations of project, no longer relevant.
 import sqlite3
 
 

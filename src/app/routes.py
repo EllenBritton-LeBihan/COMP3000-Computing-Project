@@ -9,7 +9,8 @@ import pickle
 from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score, accuracy_score
 
 
-#updated code organisation, this is now primary routes.py
+#Archived script. Used in first iterations and "shaping" of the project.
+#old routes
 
 #load new model
 with open("rf_model.pkl", "rb") as model_file:

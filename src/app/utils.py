@@ -8,7 +8,7 @@ from sklearn.metrics import confusion_matrix
 import os
 
 
-#keeping utils here for potential integration of OpenAI API since this file was used for the "old" app.py
+#keeping utils here for future integration of OpenAI API since this file was used for the "old" app.py
 def preprocess_email(text):
    
     text = text.lower()

@@ -1,3 +1,6 @@
+
+#Main app logic
+
 from flask import request, render_template, Flask, flash, redirect, url_for, session
 import pandas as pd
 import os
@@ -15,6 +18,7 @@ from datetime import datetime #to add datetime to history page.
 #updated code organisation, this is now primary app.py
 
 app = Flask(__name__)
+#setup for future feature implementation of chatbot assistant 
 app.secret_key = "secret_key"
 
 #load the trained model
@@ -71,7 +75,7 @@ def extract_email_text(file_path):
     spf_fail = "spf=fail" in auth_res
     dmarc_fail = "dmarc=fail" in auth_res
 
-    y_true_label = 1 if dkim_fail or spf_fail or dmarc_fail else 0
+    y_true_label = 1 if dkim_fail or spf_fail or dmarc_fail else 0 
 
     return email_body, y_true_label # should return exactly 2 vals
 
@@ -110,6 +114,7 @@ def calc_sus_score(ml_prob):
     top_sus_words = [all_words[i] for i in np.argsort(feature_importances)[-10]]
     #highlight top sus words in email text
     for word in top_sus_words:
+    
         email_text = re.sub(f"({word})", r'<span style="background-color: #FFD700;">\1</span>', email_text, flags=re.IGNORECASE)
 
 

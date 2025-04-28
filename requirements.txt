@@ -1,8 +1,7 @@
-flask
+Flask
 numpy
 pandas
-sklearn
-spacy
-textblob
-nltk
-sqlite3
+scikit-learn
+textstat
+numpy
+Werkzeug
