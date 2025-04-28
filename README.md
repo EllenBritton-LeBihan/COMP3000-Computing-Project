@@ -1,9 +1,8 @@
 # 2024/2025-COMP3000-Computing-Project
 
-# PhishNet
+# PhishNet | A Context-Aware Phishing Detection Tool for Emails 
 ![Image](https://github.com/user-attachments/assets/3491a07c-1431-4e2f-bc56-f85cc84918c3)
 
-# A Context-Aware Phishing Detection Tool for Emails 
 ![Static Badge](https://img.shields.io/badge/python-python?style=for-the-badge&logo=python&logoColor=22ffc4&label=Made%20With&labelColor=585873&color=22ffc4)
 
 PhishNet is a machine learning-powered web app designed to detect phishing emails by analysing their content and header signals. Upload .eml, files to receive a phishing prediction along with clear explanations of the results.
@@ -13,7 +12,7 @@ PhishNet is a machine learning-powered web app designed to detect phishing email
 	2. Ensure Python 3.9+ is installed.
 	3. Install the required dependencies using >> pip install -r requirements.txt
 	4. Launch the application by running >> python app.py
-  5. Access the web app at http://127.0.0.1:5000/ in your browser.
+        5. Access the web app at http://127.0.0.1:5000/ in your browser.
 
 ## USAGE 
 
