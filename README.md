@@ -6,7 +6,7 @@
 ![Static Badge](https://img.shields.io/badge/python-python?style=for-the-badge&logo=python&logoColor=22ffc4&label=Made%20With&labelColor=585873&color=22ffc4)
 ![Static Badge](https://img.shields.io/badge/Jupyter%20Notebook%20-%20Jupyter%20Notebook?style=for-the-badge&logo=jupyter&label=MADE%20WITH&labelColor=585873&color=0900FF)
 ![Static Badge](https://img.shields.io/badge/JavaScript%20-%20JavaScript?style=for-the-badge&logo=javascript&label=MADE%20WITH&labelColor=585873&color=F5E101)
-![Static Badge](https://img.shields.io/badge/JavaScript%20-%20JavaScript?style=for-the-badge&logo=html5&label=MADE%20WITH&labelColor=585873&color=E0F0FF)
+![Static Badge](https://img.shields.io/badge/HTML%20-%20HTML?style=for-the-badge&logo=html5&label=MADE%20WITH&labelColor=585873&color=E0F0FF)
 ![Static Badge](https://img.shields.io/badge/CSS%20-%20CSS?style=for-the-badge&logo=css&label=MADE%20WITH&labelColor=585873&color=E4917E)
 
 PhishNet is a machine learning-powered web app designed to detect phishing emails by analysing their content and header signals with the Random Forest Classifier. Upload .eml, files to receive a phishing prediction along with clear explanations of the results.
