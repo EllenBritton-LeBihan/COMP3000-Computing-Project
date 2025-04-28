@@ -1,10 +1,10 @@
 # 2024/2025-COMP3000-Computing-Project 
 
+# PhishNet | A Context-Aware Phishing Detection Tool for Emails 
+
 
 ![Image](https://github.com/user-attachments/assets/1a51d949-5497-40c3-b02c-7eefb69df3e0)
 
-
-# PhishNet | A Context-Aware Phishing Detection Tool for Emails 
 ![Image](https://github.com/user-attachments/assets/3491a07c-1431-4e2f-bc56-f85cc84918c3)
 
 ![Static Badge](https://img.shields.io/badge/python-python?style=for-the-badge&logo=python&logoColor=22ffc4&label=Made%20With&labelColor=585873&color=22ffc4)
