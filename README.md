@@ -1,4 +1,4 @@
-# 2024/2025-COMP3000-Computing-Project
+# 2024/2025-COMP3000-Computing-Project ![Image](https://github.com/user-attachments/assets/931f560a-df14-4697-ab78-69a7139459a9)
 
 # PhishNet | A Context-Aware Phishing Detection Tool for Emails 
 ![Image](https://github.com/user-attachments/assets/3491a07c-1431-4e2f-bc56-f85cc84918c3)
