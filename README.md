@@ -5,7 +5,7 @@
 
 ![Static Badge](https://img.shields.io/badge/python-python?style=for-the-badge&logo=python&logoColor=22ffc4&label=Made%20With&labelColor=585873&color=22ffc4)
 
-PhishNet is a machine learning-powered web app designed to detect phishing emails by analysing their content and header signals. Upload .eml, files to receive a phishing prediction along with clear explanations of the results.
+PhishNet is a machine learning-powered web app designed to detect phishing emails by analysing their content and header signals with the Random Forest Classifier. Upload .eml, files to receive a phishing prediction along with clear explanations of the results.
 
 ## INSTALLATION
 	1. Clone the repository into your file system >> command >> git clone --recursive <repo name>
