@@ -12,11 +12,12 @@ PhishNet is a machine learning-powered web app designed to detect phishing email
 	2. Ensure Python 3.9+ is installed.
 	3. Install the required dependencies using >> pip install -r requirements.txt
 	4. Launch the application by running >> python app.py
-        5. Access the web app at http://127.0.0.1:5000/ in your browser.
+    5. Access the web app at http://127.0.0.1:5000/ in your browser.
 
 ## USAGE 
 
 demo of phishing email upload and detection.
+
 ![Image](https://github.com/user-attachments/assets/ba3bc4a2-f020-4f76-bad6-a2fcf2a3a80f)
 
 TOOL AIM: Analyses email file. Checks for authentication failures and suspicious language patterns. Detects label (phishing or legitimate).
@@ -31,7 +32,7 @@ TOOL AIM: Analyses email file. Checks for authentication failures and suspicious
 3. Click "Check".
 4. View prediciton results:
    - Phishing or Legitimate
-   - Suuspicion Score (%)
+   - Suspicion Score (%)
    - Clear reasoning (Language, Urgency, Tone)
 5. Optionally, clear history and upload a new email.
 6. History page available to review previous uploads.
