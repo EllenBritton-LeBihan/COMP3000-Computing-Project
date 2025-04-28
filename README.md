@@ -7,12 +7,16 @@
 
 PhishNet is a machine learning-powered web app designed to detect phishing emails by analysing their content and header signals with the Random Forest Classifier. Upload .eml, files to receive a phishing prediction along with clear explanations of the results.
 
+
+
 ## INSTALLATION
 	1. Clone the repository into your file system >> command >> git clone --recursive <repo name>
 	2. Ensure Python 3.9+ is installed.
 	3. Install the required dependencies using >> pip install -r requirements.txt
 	4. Launch the application by running >> python app.py
     5. Access the web app at http://127.0.0.1:5000/ in your browser.
+
+
 
 ## USAGE 
 
@@ -27,15 +31,17 @@ TOOL AIM: Analyses email file. Checks for authentication failures and suspicious
 
 ### HOW TO USE
 
-1. Start the application locally.
-2. On the main page (Checker), upload an email file (supported format only).
-3. Click "Check".
-4. View prediciton results:
-   - Phishing or Legitimate
-   - Suspicion Score (%)
-   - Clear reasoning (Language, Urgency, Tone)
-5. Optionally, clear history and upload a new email.
-6. History page available to review previous uploads.
+	1. Start the application locally.
+	2. On the main page (Checker), upload an email file (supported format only).
+	3. Click "Check".
+	4. View prediciton results:
+   		- Phishing or Legitimate
+   		- Suspicion Score (%)
+   		- Clear reasoning (Language, Urgency, Tone)
+	5. Optionally, clear history and upload a new email.
+	6. History page available to review previous uploads.
+
+
 
 ### PREDICTION DETAILS
 
@@ -54,6 +60,8 @@ TOOL AIM: Analyses email file. Checks for authentication failures and suspicious
   -  Low Suspicion (score ≤ 40%)
 * Prediction Output
   - The email is labelled as either "Phishing" or "Legitimate" based on the model's decision.
+
+
 
 ## ADVANCED/EXTRAS
 ### ADVANCED FEATURES IMPLEMENTED
@@ -77,6 +85,8 @@ Suspicion Scoring System
 * numpy
 * Werkzeug
 
+
+
 ## FUTURE IMPROVEMENTS
 
 1. Real-time email scannig and integration
@@ -87,6 +97,7 @@ Suspicion Scoring System
    - Provide optional display of visually highlighted suspicious phrases or keywords in the email body for better user interaction and easier understanding.
    - User visible authentication results. Shows which authenticators were flagged.
    - Integrate an AI-chatbot for clearer explainability of results.
+
 
 
 ## THIRD-PARTY LICENSES
