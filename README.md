@@ -103,7 +103,8 @@ Suspicion Scoring System
    - User visible authentication results. Shows which authenticators were flagged.
    - Integrate an AI-chatbot for clearer explainability of results.
 
-
+## LINK TO PROJECT VIDEO
+[**COMP3000 Final Project Video -- PhishNet**](https://youtu.be/XABIhunSfmE)
 
 ## THIRD-PARTY LICENSES
 
